@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Little Pixel Studios — Maternity & Baby Photography, Chennai</title>
+<meta name="description" content="Little Pixel Studios is a maternity, newborn and baby photography studio in Chennai. Tender, timeless photographs of your littlest moments." />
+<style>
+  :root{
+    --cloud:#FDFCFB;
+    --blush:#F7E9E6;
+    --mist:#E9F0F2;
+    --butter:#F8F1E3;
+    --ink:#4A3D3F;
+    --ink-soft:#8B7A7C;
+    --rose:#C8656B;
+    --rose-deep:#A94E55;
+    --line:#EFE6E2;
+    --card:#FFFFFF;
+    --shadow:0 2px 4px rgba(74,61,63,.05), 0 14px 40px rgba(74,61,63,.08);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth; -webkit-text-size-adjust:100%;}
+  body{
+    background:var(--cloud); color:var(--ink);
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height:1.6; overflow-x:hidden;
+  }
+  h1,h2,h3,.serif{font-family:"Cormorant Garamond","Playfair Display",Georgia,"Times New Roman",serif; font-weight:500;}
+  a{color:inherit; text-decoration:none;}
+  button{font:inherit; cursor:pointer; border:none; background:none; color:inherit;}
+  img,svg{display:block; max-width:100%;}
+  button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible{
+    outline:2px solid var(--rose); outline-offset:2px; border-radius:4px;
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *,*::before,*::after{animation-duration:.01ms !important; transition-duration:.01ms !important;}
+  }
+  .eyebrow{letter-spacing:.3em; font-size:11px; font-weight:700; color:var(--rose); text-transform:uppercase;}
+  .section{max-width:1100px; margin:0 auto; padding:84px 22px 0;}
+  .section-head{max-width:620px; margin-bottom:38px;}
+  .section-head h2{font-size:clamp(30px,4.6vw,44px); line-height:1.12; margin-top:12px;}
+  .section-head p{color:var(--ink-soft); margin-top:10px; font-size:15.5px;}
+  em.rose{font-style:italic; color:var(--rose);}
+
+  /* ---------- Nav ---------- */
+  nav{
+    position:sticky; top:0; z-index:50; background:rgba(253,252,251,.86); backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{max-width:1100px; margin:0 auto; padding:14px 22px; display:flex; align-items:center; justify-content:space-between; gap:14px;}
+  .wordmark{letter-spacing:.3em; font-size:12px; font-weight:700; text-transform:uppercase; color:var(--ink-soft); white-space:nowrap;}
+  .wordmark b{color:var(--ink);}
+  .wordmark .px{display:inline-block; width:7px; height:7px; background:var(--rose); border-radius:2px; margin:0 6px 0 2px; vertical-align:baseline;}
+  .nav-links{display:flex; gap:26px; font-size:14px; font-weight:600; color:var(--ink-soft);}
+  .nav-links a:hover{color:var(--ink);}
+  .nav-cta{background:var(--ink); color:var(--cloud); padding:10px 18px; border-radius:999px; font-size:13.5px; font-weight:700; white-space:nowrap;}
+  .nav-cta:hover{background:var(--rose-deep);}
+  .menu-btn{display:none; width:40px; height:40px; align-items:center; justify-content:center;}
+  @media (max-width:820px){
+    .nav-links{display:none; position:absolute; top:100%; left:0; right:0; background:var(--cloud); border-bottom:1px solid var(--line);
+      flex-direction:column; gap:0; padding:8px 0;}
+    .nav-links.open{display:flex;}
+    .nav-links a{padding:13px 22px;}
+    .menu-btn{display:flex;}
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{position:relative; overflow:hidden; text-align:center; padding:96px 22px 90px;}
+  .hero .eyebrow{color:var(--ink-soft);}
+  .hero h1{font-size:clamp(44px,8vw,84px); line-height:1.04; margin:20px auto 0; max-width:820px;}
+  .hero h1 em{font-style:italic; color:var(--rose);}
+  .hero p{color:var(--ink-soft); font-size:clamp(15px,2vw,17.5px); max-width:520px; margin:22px auto 0;}
+  .hero-ctas{display:flex; gap:12px; justify-content:center; margin-top:34px; flex-wrap:wrap;}
+  .btn{padding:15px 26px; border-radius:999px; font-weight:700; font-size:15px; display:inline-flex; align-items:center; gap:9px; transition:transform .15s ease, background .15s ease;}
+  .btn:active{transform:scale(.98);}
+  .btn-dark{background:var(--ink); color:var(--cloud);}
+  .btn-dark:hover{background:var(--rose-deep);}
+  .btn-soft{background:var(--card); border:1px solid var(--line); color:var(--ink); box-shadow:var(--shadow);}
+  .btn-soft:hover{border-color:var(--rose);}
+  /* floating pixels — the signature */
+  .px-float{position:absolute; border-radius:26%; opacity:.85; animation:drift 9s ease-in-out infinite; z-index:-1;}
+  @keyframes drift{0%,100%{transform:translateY(0) rotate(0deg);} 50%{transform:translateY(-22px) rotate(8deg);}}
+  .hero-note{margin-top:46px; font-size:12.5px; color:var(--ink-soft); letter-spacing:.14em; text-transform:uppercase;}
+
+  /* ---------- Portfolio ---------- */
+  .filter-chips{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:26px;}
+  .chip{padding:9px 18px; border-radius:999px; font-size:13.5px; font-weight:700; color:var(--ink-soft); border:1px solid var(--line); background:var(--card);}
+  .chip[aria-pressed="true"]{background:var(--ink); color:var(--cloud); border-color:var(--ink);}
+  .pf-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  @media (max-width:760px){.pf-grid{grid-template-columns:repeat(2,1fr); gap:12px;}}
+  .pf-item{border-radius:14px; overflow:hidden; box-shadow:var(--shadow); position:relative; background:var(--card);}
+  .pf-item svg{width:100%; aspect-ratio:4/5;}
+  .pf-item:nth-child(4n+1) svg{aspect-ratio:4/5;}
+  .pf-tag{position:absolute; bottom:10px; left:10px; background:rgba(253,252,251,.9); backdrop-filter:blur(4px); font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft); padding:5px 11px; border-radius:999px;}
+  .pf-note{margin-top:18px; font-size:13px; color:var(--ink-soft); text-align:center;}
+
+  /* ---------- Packages ---------- */
+  #packages{background:linear-gradient(180deg, var(--cloud), var(--blush) 22%, var(--blush) 78%, var(--cloud)); margin-top:84px; padding-top:0;}
+  #packages .section{padding-top:76px; padding-bottom:76px;}
+  .pk-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
+  @media (max-width:860px){.pk-grid{grid-template-columns:1fr; max-width:440px; margin:0 auto;}}
+  .pk-card{background:var(--card); border-radius:20px; padding:30px 26px; box-shadow:var(--shadow); display:flex; flex-direction:column; position:relative;}
+  .pk-card.featured{outline:2px solid var(--rose);}
+  .pk-pop{position:absolute; top:-12px; left:26px; background:var(--rose); color:#fff; font-size:11px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; padding:5px 12px; border-radius:999px;}
+  .pk-card h3{font-size:27px;}
+  .pk-when{font-size:12.5px; color:var(--ink-soft); letter-spacing:.08em; text-transform:uppercase; margin-top:2px;}
+  .pk-price{font-size:34px; font-family:"Cormorant Garamond",Georgia,serif; margin:16px 0 2px;}
+  .pk-price span{font-size:14px; color:var(--ink-soft); font-family:inherit;}
+  .pk-list{list-style:none; margin:16px 0 22px; display:grid; gap:9px; font-size:14.2px; color:var(--ink-soft);}
+  .pk-list li{display:flex; gap:9px; align-items:flex-start;}
+  .pk-list li::before{content:""; flex:none; width:6px; height:6px; border-radius:2px; background:var(--rose); margin-top:8px;}
+  .pk-card .btn{margin-top:auto; justify-content:center;}
+  .pk-fine{text-align:center; font-size:13px; color:var(--ink-soft); margin-top:22px;}
+
+  /* ---------- About + testimonials ---------- */
+  .about-wrap{display:grid; grid-template-columns:1fr 1.1fr; gap:44px; align-items:center;}
+  @media (max-width:820px){.about-wrap{grid-template-columns:1fr;}}
+  .about-photo{border-radius:20px; overflow:hidden; box-shadow:var(--shadow);}
+  .about-photo svg{width:100%; aspect-ratio:4/5;}
+  .about-copy h2{font-size:clamp(30px,4.6vw,42px); line-height:1.14; margin-top:12px;}
+  .about-copy p{color:var(--ink-soft); margin-top:14px; font-size:15.5px;}
+  .about-stats{display:flex; gap:34px; margin-top:26px; flex-wrap:wrap;}
+  .stat b{font-family:"Cormorant Garamond",Georgia,serif; font-size:30px; font-weight:500; display:block; color:var(--ink);}
+  .stat span{font-size:12.5px; color:var(--ink-soft); letter-spacing:.06em; text-transform:uppercase;}
+
+  .tst-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:38px;}
+  @media (max-width:820px){.tst-grid{grid-template-columns:1fr; max-width:480px;}}
+  .tst{background:var(--card); border-radius:18px; padding:24px; box-shadow:var(--shadow);}
+  .tst q{font-family:"Cormorant Garamond",Georgia,serif; font-size:19px; line-height:1.45; font-style:italic; quotes:"“" "”";}
+  .tst .who{margin-top:14px; font-size:13px; color:var(--ink-soft); font-weight:600;}
+  .stars{color:var(--rose); letter-spacing:2px; font-size:13px; margin-bottom:10px;}
+
+  /* ---------- Booking ---------- */
+  #book{background:linear-gradient(180deg, var(--cloud), var(--mist) 25%, var(--mist) 80%, var(--cloud)); margin-top:84px;}
+  #book .section{padding-top:76px; padding-bottom:76px;}
+  .book-wrap{display:grid; grid-template-columns:1fr 1.15fr; gap:44px;}
+  @media (max-width:860px){.book-wrap{grid-template-columns:1fr;}}
+  .book-side h2{font-size:clamp(30px,4.6vw,42px); line-height:1.14; margin-top:12px;}
+  .book-side p{color:var(--ink-soft); margin-top:12px; font-size:15.5px; max-width:400px;}
+  .book-contact{margin-top:26px; display:grid; gap:12px; font-size:14.5px; font-weight:600;}
+  .book-contact a{display:inline-flex; gap:10px; align-items:center; color:var(--ink);}
+  .book-contact a:hover{color:var(--rose-deep);}
+  form.booking{background:var(--card); border-radius:20px; padding:28px 24px; box-shadow:var(--shadow); display:grid; gap:14px;}
+  .field label{display:block; font-size:12.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:6px;}
+  .field input, .field select, .field textarea{
+    width:100%; padding:13px 14px; border:1px solid var(--line); border-radius:10px; background:var(--cloud);
+    font:inherit; color:var(--ink); font-size:15px;
+  }
+  .field textarea{min-height:90px; resize:vertical;}
+  .two-col{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media (max-width:480px){.two-col{grid-template-columns:1fr;}}
+  .form-note{font-size:12.5px; color:var(--ink-soft); text-align:center;}
+
+  /* ---------- Footer ---------- */
+  footer{padding:56px 22px 40px; text-align:center; border-top:1px solid var(--line); margin-top:84px;}
+  .foot-social{display:flex; gap:14px; justify-content:center; margin-top:18px;}
+  .foot-social a{width:42px; height:42px; border-radius:50%; border:1px solid var(--line); display:flex; align-items:center; justify-content:center; color:var(--ink-soft);}
+  .foot-social a:hover{color:var(--rose-deep); border-color:var(--rose);}
+  .foot-fine{margin-top:22px; font-size:12.5px; color:var(--ink-soft);}
+  .foot-fine a{color:var(--rose-deep); font-weight:600;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="wordmark" href="#top">Little<span class="px"></span><b>Pixel</b>&nbsp;Studios</a>
+    <div class="nav-links" id="navLinks">
+      <a href="#portfolio">Portfolio</a>
+      <a href="#packages">Packages</a>
+      <a href="#about">About</a>
+      <a href="#book">Book a shoot</a>
+      <a href="#" onclick="alert('Links to the client portal we built — one page per client with their access code.');return false;">Client login</a>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <a class="nav-cta" href="#book">Book a shoot</a>
+      <button class="menu-btn" aria-label="Menu" onclick="document.getElementById('navLinks').classList.toggle('open')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="top">
+  <span class="px-float" style="width:22px;height:22px;background:var(--blush);top:18%;left:12%;animation-delay:0s"></span>
+  <span class="px-float" style="width:14px;height:14px;background:var(--mist);top:30%;right:14%;animation-delay:1.2s"></span>
+  <span class="px-float" style="width:18px;height:18px;background:var(--butter);bottom:24%;left:20%;animation-delay:2.1s"></span>
+  <span class="px-float" style="width:12px;height:12px;background:var(--blush);bottom:30%;right:22%;animation-delay:.6s"></span>
+  <span class="px-float" style="width:10px;height:10px;background:var(--mist);top:14%;right:34%;animation-delay:1.8s"></span>
+
+  <div class="eyebrow">Maternity · Newborn · Baby — Chennai</div>
+  <h1>Little moments,<br/><em>kept forever.</em></h1>
+  <p>They won't stay this small for long. We photograph the bump, the first yawns and the tiny toes — softly, patiently, beautifully.</p>
+  <div class="hero-ctas">
+    <a class="btn btn-dark" href="#book">Book your shoot</a>
+    <a class="btn btn-soft" href="#portfolio">See the portfolio</a>
+  </div>
+  <div class="hero-note">500+ families photographed across Chennai</div>
+</header>
+
+<!-- ============ PORTFOLIO ============ -->
+<section class="section" id="portfolio">
+  <div class="section-head">
+    <div class="eyebrow">Portfolio</div>
+    <h2>Every stage of <em class="rose">little.</em></h2>
+    <p>A glimpse of recent sessions. Tap a category to browse.</p>
+  </div>
+  <div class="filter-chips" id="pfChips">
+    <button class="chip" aria-pressed="true" data-cat="all">All</button>
+    <button class="chip" aria-pressed="false" data-cat="maternity">Maternity</button>
+    <button class="chip" aria-pressed="false" data-cat="newborn">Newborn</button>
+    <button class="chip" aria-pressed="false" data-cat="baby">Baby & toddler</button>
+    <button class="chip" aria-pressed="false" data-cat="family">Family</button>
+  </div>
+  <div class="pf-grid" id="pfGrid"></div>
+  <p class="pf-note">These soft tiles are placeholders — your real photographs drop straight in when we go live.</p>
+</section>
+
+<!-- ============ PACKAGES ============ -->
+<div id="packages">
+  <section class="section" style="padding-top:76px;">
+    <div class="section-head">
+      <div class="eyebrow">Packages</div>
+      <h2>Simple, honest <em class="rose">pricing.</em></h2>
+      <p>Every package includes a relaxed studio session, professionally retouched photos, and your own private online gallery to pick favourites from.</p>
+    </div>
+    <div class="pk-grid">
+      <div class="pk-card">
+        <h3>The Bump</h3>
+        <div class="pk-when">Maternity · weeks 28–34</div>
+        <div class="pk-price">₹8,999 <span>/ session</span></div>
+        <ul class="pk-list">
+          <li>90-minute studio session</li>
+          <li>3 outfits &amp; gown library included</li>
+          <li>15 retouched photos of your choice</li>
+          <li>Private online gallery &amp; photo selector</li>
+        </ul>
+        <a class="btn btn-soft" href="#book" data-pkg="The Bump — Maternity">Choose this</a>
+      </div>
+      <div class="pk-card featured">
+        <span class="pk-pop">Most loved</span>
+        <h3>Hello, Little One</h3>
+        <div class="pk-when">Newborn · days 5–21</div>
+        <div class="pk-price">₹12,999 <span>/ session</span></div>
+        <ul class="pk-list">
+          <li>3-hour baby-led session, feeds &amp; cuddles welcome</li>
+          <li>Props, wraps &amp; setups included</li>
+          <li>20 retouched photos of your choice</li>
+          <li>Parent &amp; sibling poses included</li>
+          <li>Private online gallery &amp; photo selector</li>
+        </ul>
+        <a class="btn btn-dark" href="#book" data-pkg="Hello, Little One — Newborn">Choose this</a>
+      </div>
+      <div class="pk-card">
+        <h3>Cake Smash</h3>
+        <div class="pk-when">First birthday</div>
+        <div class="pk-price">₹9,999 <span>/ session</span></div>
+        <ul class="pk-list">
+          <li>2-hour session with themed setup</li>
+          <li>Smash cake styling included</li>
+          <li>15 retouched photos of your choice</li>
+          <li>Private online gallery &amp; photo selector</li>
+        </ul>
+        <a class="btn btn-soft" href="#book" data-pkg="Cake Smash — First birthday">Choose this</a>
+      </div>
+    </div>
+    <p class="pk-fine">Love more than your included photos? Extra picks are just ₹350 each, right inside your gallery. Prices above are placeholders — set your real rates before launch.</p>
+  </section>
+</div>
+
+<!-- ============ ABOUT ============ -->
+<section class="section" id="about">
+  <div class="about-wrap">
+    <div class="about-photo">
+      <svg viewBox="0 0 120 150" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Photographer portrait placeholder">
+        <defs><linearGradient id="ab" x1="0" y1="0" x2="0.6" y2="1"><stop offset="0" stop-color="#F0E2DC"/><stop offset="1" stop-color="#CBA8A4"/></linearGradient></defs>
+        <rect width="120" height="150" fill="url(#ab)"/>
+        <circle cx="60" cy="52" r="14" stroke="rgba(255,255,255,.8)" stroke-width="1.6" fill="none"/>
+        <path d="M36 108c4-18 14-27 24-27s20 9 24 27" stroke="rgba(255,255,255,.8)" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+        <text x="60" y="132" text-anchor="middle" font-size="6.5" fill="rgba(74,61,63,.45)" font-family="monospace" letter-spacing="1">YOUR PHOTO HERE</text>
+      </svg>
+    </div>
+    <div class="about-copy">
+      <div class="eyebrow">About the studio</div>
+      <h2>Patient hands, warm hearts, <em class="rose">tiny humans.</em></h2>
+      <p>Little Pixel Studios began with one belief: the first year disappears fast, and photographs are how we get to keep it. Our studio in Chennai is warm, unhurried and baby-led — feeds, naps and cuddle breaks are part of every session, never an interruption.</p>
+      <p>Every family gets their own private online gallery where you browse your photos, circle your favourites like a photographer marks a contact sheet, and we take it from there.</p>
+      <div class="about-stats">
+        <div class="stat"><b>500+</b><span>families</span></div>
+        <div class="stat"><b>6 yrs</b><span>behind the lens</span></div>
+        <div class="stat"><b>5.0★</b><span>on Google</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tst-grid">
+    <div class="tst"><div class="stars">★★★★★</div><q>She was so gentle with our 10-day-old — half the session happened while he slept in her arms. The photos made my mother cry.</q><div class="who">Priya &amp; Karthik · Newborn session</div></div>
+    <div class="tst"><div class="stars">★★★★★</div><q>The gallery made choosing photos so easy — we picked our favourites on our phones the same night.</q><div class="who">Divya · Maternity session</div></div>
+    <div class="tst"><div class="stars">★★★★★</div><q>Our cake smash was pure chaos and she caught every second of it. Worth every rupee.</q><div class="who">Ashwin &amp; Meera · First birthday</div></div>
+  </div>
+  <p class="pf-note" style="margin-top:16px">Sample testimonials — we'll swap in your real Google reviews.</p>
+</section>
+
+<!-- ============ BOOKING ============ -->
+<div id="book">
+  <section class="section" style="padding-top:76px;">
+    <div class="book-wrap">
+      <div class="book-side">
+        <div class="eyebrow">Book a shoot</div>
+        <h2>Let's plan your <em class="rose">session.</em></h2>
+        <p>Tell us a little about your family and we'll reply on WhatsApp within a few hours with dates and details. Newborn sessions are best booked before baby arrives!</p>
+        <div class="book-contact">
+          <a href="https://wa.me/919791143983" target="_blank" rel="noopener">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22c5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2z"/></svg>
+            +91 97911 43983
+          </a>
+          <a href="https://www.instagram.com/little_pixel_photography/" target="_blank" rel="noopener">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+            @little_pixel_photography
+          </a>
+          <span style="display:inline-flex;gap:10px;align-items:center;color:var(--ink-soft);">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 12-9 12S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Chennai, Tamil Nadu
+          </span>
+        </div>
+      </div>
+
+      <form class="booking" id="bookForm">
+        <div class="two-col">
+          <div class="field"><label for="bName">Your name</label><input id="bName" required placeholder="Ananya" /></div>
+          <div class="field"><label for="bPhone">WhatsApp number</label><input id="bPhone" required inputmode="tel" placeholder="98xxxxxxx0" /></div>
+        </div>
+        <div class="two-col">
+          <div class="field"><label for="bType">Session type</label>
+            <select id="bType">
+              <option>Maternity — The Bump</option>
+              <option>Newborn — Hello, Little One</option>
+              <option>Cake Smash — First birthday</option>
+              <option>Baby / toddler milestone</option>
+              <option>Family session</option>
+              <option>Not sure yet</option>
+            </select>
+          </div>
+          <div class="field"><label for="bDate">Preferred date</label><input id="bDate" type="date" /></div>
+        </div>
+        <div class="field"><label for="bMsg">Anything we should know?</label><textarea id="bMsg" placeholder="Due date, baby's age, ideas you love…"></textarea></div>
+        <button class="btn btn-dark" type="submit" style="justify-content:center;">
+          Send enquiry on WhatsApp
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+        <p class="form-note">Opens WhatsApp with your details pre-filled — nothing sends until you press send there.</p>
+      </form>
+    </div>
+  </section>
+</div>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <a class="wordmark" href="#top">Little<span class="px"></span><b>Pixel</b>&nbsp;Studios</a>
+  <div class="foot-social">
+    <a href="https://www.instagram.com/little_pixel_photography/" target="_blank" rel="noopener" aria-label="Instagram">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+    </a>
+    <a href="https://wa.me/919791143983" target="_blank" rel="noopener" aria-label="WhatsApp">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22c5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2z"/></svg>
+    </a>
+  </div>
+  <p class="foot-fine">Maternity · Newborn · Baby photography, Chennai<br/>
+  © 2026 Little Pixel Studios · <a href="#" onclick="alert('Links to the client portal.');return false;">Client login</a></p>
+</footer>
+
+<script>
+/* ---------- Portfolio placeholders ---------- */
+const CATS = ["maternity","newborn","baby","family"];
+const LABELS = {maternity:"Maternity", newborn:"Newborn", baby:"Baby & toddler", family:"Family"};
+const TONES = [
+  ["#F3E4DE","#D3ACA6"], ["#EDF1EE","#AEBDB0"], ["#F6EDDE","#D5BD97"],
+  ["#EDEFF3","#AAB6C6"], ["#F5E7E9","#D2A9B2"], ["#EFEAE4","#BBA894"]
+];
+const MOTIFS = ["moon","star","heart","foot","cloud","leaf"];
+function motifSVG(kind, color){
+  const c = `stroke="${color}" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"`;
+  switch(kind){
+    case "moon": return `<path d="M60 44a16 16 0 1 0 12 26 13 13 0 0 1-12-26z" ${c}/>`;
+    case "star": return `<path d="M60 42l4.5 9.5L75 53l-7.5 7 2 10.5L60 65l-9.5 5.5 2-10.5L45 53l10.5-1.5z" ${c}/>`;
+    case "heart": return `<path d="M60 72c-9-6.5-15-11.5-15-18a8 8 0 0 1 15-4 8 8 0 0 1 15 4c0 6.5-6 11.5-15 18z" ${c}/>`;
+    case "foot": return `<ellipse cx="58" cy="62" rx="8" ry="11" ${c}/><circle cx="50" cy="48" r="2.2" ${c}/><circle cx="56" cy="45.5" r="2.2" ${c}/><circle cx="62" cy="45" r="2.2" ${c}/><circle cx="68" cy="47" r="2.2" ${c}/>`;
+    case "cloud": return `<path d="M46 64a8 8 0 0 1 3-15 10 10 0 0 1 19-2 8 8 0 0 1 6 17z" ${c}/>`;
+    case "leaf": return `<path d="M48 72c0-16 8-26 24-28-2 16-10 26-24 28z" ${c}/><path d="M50 70c6-8 12-14 18-20" ${c}/>`;
+  }
+}
+const items = Array.from({length:12}, (_,i)=>({
+  id:i, cat:CATS[i % CATS.length], tone:TONES[i % TONES.length], motif:MOTIFS[i % MOTIFS.length]
+}));
+function renderPF(cat){
+  document.getElementById("pfGrid").innerHTML = items
+    .filter(it=>cat==="all"||it.cat===cat)
+    .map(it=>`<div class="pf-item">
+      <svg viewBox="0 0 120 150" preserveAspectRatio="xMidYMid slice" role="img" aria-label="${LABELS[it.cat]} photo placeholder">
+        <defs><linearGradient id="pf${it.id}" x1="0" y1="0" x2="0.6" y2="1">
+          <stop offset="0" stop-color="${it.tone[0]}"/><stop offset="1" stop-color="${it.tone[1]}"/></linearGradient></defs>
+        <rect width="120" height="150" fill="url(#pf${it.id})"/>
+        ${motifSVG(it.motif,"rgba(255,255,255,.8)")}
+      </svg>
+      <span class="pf-tag">${LABELS[it.cat]}</span>
+    </div>`).join("");
+}
+renderPF("all");
+document.querySelectorAll("#pfChips .chip").forEach(ch=>{
+  ch.addEventListener("click", ()=>{
+    document.querySelectorAll("#pfChips .chip").forEach(x=>x.setAttribute("aria-pressed","false"));
+    ch.setAttribute("aria-pressed","true");
+    renderPF(ch.dataset.cat);
+  });
+});
+
+/* ---------- Package pre-select ---------- */
+document.querySelectorAll("[data-pkg]").forEach(a=>{
+  a.addEventListener("click", ()=>{
+    const sel = document.getElementById("bType");
+    const map = {"The Bump — Maternity":0, "Hello, Little One — Newborn":1, "Cake Smash — First birthday":2};
+    if(a.dataset.pkg in map) sel.selectedIndex = map[a.dataset.pkg];
+  });
+});
+
+/* ---------- Booking → WhatsApp ---------- */
+document.getElementById("bookForm").addEventListener("submit", e=>{
+  e.preventDefault();
+  const name = document.getElementById("bName").value.trim();
+  const phone = document.getElementById("bPhone").value.trim();
+  const type = document.getElementById("bType").value;
+  const date = document.getElementById("bDate").value;
+  const msg = document.getElementById("bMsg").value.trim();
+  let text = `Hi Little Pixel Studios! I'd like to book a session.\n\nName: ${name}\nWhatsApp: ${phone}\nSession: ${type}`;
+  if(date) text += `\nPreferred date: ${date}`;
+  if(msg) text += `\nNotes: ${msg}`;
+  window.open("https://wa.me/919791143983?text=" + encodeURIComponent(text), "_blank");
+});
+
+/* ---------- Close mobile menu on link tap ---------- */
+document.querySelectorAll("#navLinks a").forEach(a=>a.addEventListener("click", ()=>{
+  document.getElementById("navLinks").classList.remove("open");
+}));
+</script>
+</body>
+</html>
