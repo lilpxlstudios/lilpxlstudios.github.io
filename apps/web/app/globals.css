@@ -1,0 +1,34 @@
+@import "tailwindcss";
+
+/*
+ * Values here must stay in sync with packages/design-tokens/src/*.ts —
+ * Tailwind v4's @theme requires static CSS values, so it can't import the
+ * TS tokens directly. RN/mobile theming reads the same TS source later.
+ */
+@theme inline {
+  --color-ink-950: #0a0a0b;
+  --color-ink-900: #151517;
+  --color-ink-700: #3a3a3f;
+  --color-ink-500: #6b6b72;
+  --color-ink-300: #a8a8b0;
+  --color-ink-100: #e4e4e8;
+
+  --color-paper-50: #ffffff;
+  --color-paper-100: #faf9f7;
+  --color-paper-200: #f0eee9;
+
+  --color-accent-600: #a8791f;
+  --color-accent-500: #c99a3a;
+  --color-accent-400: #dcb968;
+
+  --color-success-500: #1f8a4c;
+  --color-warning-500: #b8791f;
+  --color-danger-500: #c0392b;
+
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+}
+
+body {
+  font-family: var(--font-body);
+}

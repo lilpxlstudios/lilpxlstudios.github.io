@@ -1,0 +1,22 @@
+{
+  "name": "@lps/functions",
+  "version": "0.0.0",
+  "private": true,
+  "engines": { "node": "20" },
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "serve": "npm run build && firebase emulators:start --only functions",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@lps/shared": "workspace:*",
+    "firebase-admin": "^13.0.2",
+    "firebase-functions": "^6.1.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  }
+}

@@ -1,0 +1,91 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.admin == true;
+    }
+
+    function isOwner(clientUid) {
+      return isSignedIn() && request.auth.uid == clientUid;
+    }
+
+    // Deny everything by default; each collection below opts back in explicitly.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    match /users/{uid} {
+      allow read: if isAdmin() || isOwner(uid);
+      // Profile docs are written by Cloud Functions (Admin SDK) on account creation/update.
+      allow write: if false;
+    }
+
+    match /orders/{orderId} {
+      allow read: if isAdmin() || isOwner(resource.data.clientUid);
+      // All order mutations (status transitions, drive links, amountDue) go through
+      // Cloud Functions using the Admin SDK, which bypasses these rules entirely.
+      allow write: if false;
+
+      match /proofs/{proofId} {
+        allow read: if isAdmin() || isOwner(get(/databases/$(database)/documents/orders/$(orderId)).data.clientUid);
+
+        // The one narrow client-writable surface in the whole schema: a client may
+        // toggle their own selection on a proof, only while selection is still open.
+        allow update: if isAdmin() || (
+          isOwner(get(/databases/$(database)/documents/orders/$(orderId)).data.clientUid) &&
+          get(/databases/$(database)/documents/orders/$(orderId)).data.selectionState.status != 'completed' &&
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['selected', 'selectedAt'])
+        );
+        allow create, delete: if false; // proofs are created only by the syncProofs function
+      }
+
+      match /selectionExports/{exportId} {
+        allow read: if isAdmin() || isOwner(get(/databases/$(database)/documents/orders/$(orderId)).data.clientUid);
+        allow write: if false;
+      }
+    }
+
+    match /payments/{paymentId} {
+      allow read: if isAdmin() || isOwner(resource.data.clientUid);
+      allow write: if false; // written only by createRazorpayOrder / razorpayWebhook functions
+    }
+
+    match /invoices/{invoiceId} {
+      allow read: if isAdmin() || isOwner(resource.data.clientUid);
+      allow write: if false; // written only by the generateInvoice function
+    }
+
+    match /counters/{counterId} {
+      allow read, write: if false; // internal to the invoice-numbering transaction
+    }
+
+    match /webhookEvents/{eventId} {
+      allow read, write: if false; // internal idempotency ledger for razorpayWebhook
+    }
+
+    match /newsletterSubscribers/{subId} {
+      // Public signup form creates its own doc; no client can read the list or edit others'.
+      allow create: if request.resource.data.keys().hasOnly(
+        ['email', 'name', 'optInAt', 'optInSource', 'doubleOptInConfirmed', 'confirmationToken', 'status', 'unsubscribedAt']
+      ) && request.resource.data.status == 'pending';
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /marketingContent/{contentId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /inquiries/{inquiryId} {
+      allow create: if request.resource.data.keys().hasOnly(
+        ['name', 'email', 'phone', 'message', 'shootTypeInterest', 'submittedAt', 'status']
+      ) && request.resource.data.status == 'new';
+      allow read, update, delete: if isAdmin();
+    }
+  }
+}

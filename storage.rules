@@ -1,0 +1,42 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.admin == true;
+    }
+
+    function orderClientUid(orderId) {
+      return firestore.get(/databases/(default)/documents/orders/$(orderId)).data.clientUid;
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+
+    // Proof thumbnails for the photo-selection tool.
+    match /orders/{orderId}/proofThumbs/{fileName} {
+      allow read: if isAdmin() || (isSignedIn() && request.auth.uid == orderClientUid(orderId));
+      allow write: if false; // written only by the syncProofsFromDrive function
+    }
+
+    // Selection CSV exports — admin only, per the brief (delivered via email + admin panel).
+    match /orders/{orderId}/exports/{fileName} {
+      allow read, write: if isAdmin();
+    }
+
+    // Issued invoice PDFs.
+    match /invoices/{fileName} {
+      allow read: if isAdmin() || (
+        isSignedIn() &&
+        request.auth.uid == firestore.get(/databases/(default)/documents/invoices/$(fileName.split('.')[0])).data.clientUid
+      );
+      allow write: if false; // written only by the generateInvoice function
+    }
+  }
+}

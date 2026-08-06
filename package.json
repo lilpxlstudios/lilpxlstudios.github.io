@@ -1,0 +1,21 @@
+{
+  "name": "littlepixelstudios",
+  "private": true,
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "emulators": "firebase emulators:start",
+    "set-admin-claim": "tsx scripts/setAdminClaim.ts"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.0.2"
+  },
+  "devDependencies": {
+    "turbo": "^2.3.3",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
