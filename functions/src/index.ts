@@ -3,6 +3,7 @@ import { onRequest } from "firebase-functions/v2/https";
 import "./admin";
 
 export { razorpayWebhook } from "./payments";
+export { onInquiryCreated, onNewsletterSubscriberCreated, onSelectionCompleted } from "./marketing";
 
 setGlobalOptions({ region: "asia-south1", maxInstances: 10 });
 
