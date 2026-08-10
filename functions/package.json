@@ -5,13 +5,13 @@
   "engines": { "node": "20" },
   "main": "lib/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "bash scripts/vendor-shared.sh && tsc",
     "build:watch": "tsc --watch",
     "serve": "npm run build && firebase emulators:start --only functions",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "bash scripts/vendor-shared.sh && tsc --noEmit"
   },
   "dependencies": {
-    "@lps/shared": "workspace:*",
+    "@lps/shared": "file:vendor/lps-shared",
     "firebase-admin": "^13.0.2",
     "firebase-functions": "^6.1.0",
     "zod": "^3.24.1"

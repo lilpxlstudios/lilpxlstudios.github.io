@@ -2,6 +2,8 @@ import { setGlobalOptions } from "firebase-functions/v2";
 import { onRequest } from "firebase-functions/v2/https";
 import "./admin";
 
+export { razorpayWebhook } from "./payments";
+
 setGlobalOptions({ region: "asia-south1", maxInstances: 10 });
 
 // Confirms the Functions deploy pipeline (build, region, emulator wiring) works

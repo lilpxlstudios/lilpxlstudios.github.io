@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { adminDb, adminStorage } from "@/lib/firebase/admin";
-import { ORDER_STATUS_TRANSITIONS, type Order, type Proof, type SelectionExport } from "@lps/shared";
+import { ORDER_STATUS_TRANSITIONS, type Invoice, type Order, type Proof, type SelectionExport } from "@lps/shared";
 import { StatusForm } from "./StatusForm";
 import { DriveLinkForm } from "./DriveLinkForm";
 import { AmountForm } from "./AmountForm";
 import { SyncProofsButton } from "./SyncProofsButton";
 import { ReopenSelectionButton } from "./ReopenSelectionButton";
+import { GenerateInvoiceButton } from "./GenerateInvoiceButton";
 
 async function getOrder(orderId: string): Promise<Order | null> {
   const snap = await adminDb.collection("orders").doc(orderId).get();
@@ -16,6 +17,17 @@ async function getOrder(orderId: string): Promise<Order | null> {
 async function getProofs(orderId: string): Promise<Proof[]> {
   const snap = await adminDb.collection("orders").doc(orderId).collection("proofs").orderBy("index").get();
   return snap.docs.map((doc) => doc.data() as Proof);
+}
+
+async function getInvoice(orderId: string): Promise<{ data: Invoice; downloadUrl: string } | null> {
+  const snap = await adminDb.collection("invoices").where("orderId", "==", orderId).limit(1).get();
+  if (snap.empty) return null;
+  const data = snap.docs[0]!.data() as Invoice;
+  const [downloadUrl] = await adminStorage
+    .bucket()
+    .file(data.pdfStoragePath!)
+    .getSignedUrl({ action: "read", expires: Date.now() + 15 * 60 * 1000 });
+  return { data, downloadUrl };
 }
 
 async function getLatestExport(orderId: string): Promise<{ data: SelectionExport; downloadUrl: string } | null> {
@@ -40,8 +52,15 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ or
   const order = await getOrder(orderId);
   if (!order) notFound();
 
-  const [proofs, latestExport] = await Promise.all([getProofs(orderId), getLatestExport(orderId)]);
-  const nextStatuses = ORDER_STATUS_TRANSITIONS[order.status];
+  const [proofs, latestExport, invoice] = await Promise.all([
+    getProofs(orderId),
+    getLatestExport(orderId),
+    getInvoice(orderId),
+  ]);
+  // "invoiced" is reachable only via GenerateInvoiceButton, which creates the actual
+  // invoice doc/PDF — offering it in the generic dropdown would let an order end up
+  // "invoiced" with nothing to show the client.
+  const nextStatuses = ORDER_STATUS_TRANSITIONS[order.status].filter((s) => s !== "invoiced");
 
   return (
     <div className="flex flex-col gap-8 max-w-2xl">
@@ -65,6 +84,24 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ or
       <div className="flex flex-col gap-2">
         <p className="text-sm text-ink-700 font-medium">Amount due</p>
         <AmountForm orderId={order.id} amountDue={order.amountDue} />
+      </div>
+
+      <div className="flex flex-col gap-2 border-t border-ink-100 pt-6">
+        <p className="text-sm text-ink-700 font-medium">Invoice</p>
+        {invoice ? (
+          <div className="flex items-center gap-3">
+            <p className="text-sm text-ink-500">
+              {invoice.data.invoiceNumber} · issued {new Date(invoice.data.issuedAt!).toLocaleDateString()}
+            </p>
+            <a href={invoice.downloadUrl} className="text-sm text-accent-600">
+              Download PDF (link expires in 15 min)
+            </a>
+          </div>
+        ) : order.status === "paid" ? (
+          <GenerateInvoiceButton orderId={order.id} />
+        ) : (
+          <p className="text-sm text-ink-500">Available once the order is marked paid.</p>
+        )}
       </div>
 
       <div className="flex flex-col gap-6 border-t border-ink-100 pt-6">

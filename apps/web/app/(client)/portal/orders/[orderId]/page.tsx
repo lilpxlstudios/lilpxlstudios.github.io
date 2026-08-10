@@ -1,12 +1,24 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireSession } from "@/lib/dal";
-import { adminDb } from "@/lib/firebase/admin";
-import type { Order } from "@lps/shared";
+import { adminDb, adminStorage } from "@/lib/firebase/admin";
+import { PaymentPanel } from "./PaymentPanel";
+import type { Invoice, Order } from "@lps/shared";
 
 async function getOrder(orderId: string): Promise<Order | null> {
   const snap = await adminDb.collection("orders").doc(orderId).get();
   return snap.exists ? (snap.data() as Order) : null;
+}
+
+async function getInvoice(orderId: string): Promise<{ data: Invoice; downloadUrl: string } | null> {
+  const snap = await adminDb.collection("invoices").where("orderId", "==", orderId).limit(1).get();
+  if (snap.empty) return null;
+  const data = snap.docs[0]!.data() as Invoice;
+  const [downloadUrl] = await adminStorage
+    .bucket()
+    .file(data.pdfStoragePath!)
+    .getSignedUrl({ action: "read", expires: Date.now() + 15 * 60 * 1000 });
+  return { data, downloadUrl };
 }
 
 export default async function ClientOrderPage({ params }: { params: Promise<{ orderId: string }> }) {
@@ -17,6 +29,7 @@ export default async function ClientOrderPage({ params }: { params: Promise<{ or
 
   const canSelect = order.proofsDriveLink && order.selectionState.totalCount > 0;
   const selectionDone = order.selectionState.status === "completed";
+  const invoice = await getInvoice(orderId);
 
   return (
     <div className="flex flex-col gap-8 max-w-xl">
@@ -60,6 +73,17 @@ export default async function ClientOrderPage({ params }: { params: Promise<{ or
               </Link>
             </>
           )}
+        </div>
+      )}
+
+      <PaymentPanel orderId={order.id} initialOrder={order} />
+
+      {invoice && (
+        <div className="flex flex-col gap-2 border-t border-ink-100 pt-6">
+          <p className="text-sm text-ink-700 font-medium">Invoice {invoice.data.invoiceNumber}</p>
+          <a href={invoice.downloadUrl} className="self-start text-sm text-accent-600">
+            Download invoice (PDF)
+          </a>
         </div>
       )}
     </div>

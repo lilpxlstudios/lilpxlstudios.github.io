@@ -2,7 +2,9 @@ node_modules/
 .next/
 out/
 dist/
-lib/
+/functions/lib/
+/packages/shared/lib/
+vendor/
 .turbo/
 .env
 .env.local

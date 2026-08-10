@@ -23,6 +23,7 @@ export const invoiceLineItemSchema = z.object({
   description: z.string(),
   amount: z.number(),
 });
+export type InvoiceLineItem = z.infer<typeof invoiceLineItemSchema>;
 
 export const invoiceSchema = z.object({
   id: z.string(),
