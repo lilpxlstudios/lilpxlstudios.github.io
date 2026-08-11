@@ -8,7 +8,7 @@
     "build": {
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**", "lib/**"],
-      "env": ["FIREBASE_SERVICE_ACCOUNT_KEY", "RAZORPAY_KEY_ID", "RAZORPAY_KEY_SECRET"]
+      "env": ["FIREBASE_SERVICE_ACCOUNT_KEY", "RAZORPAY_KEY_ID", "RAZORPAY_KEY_SECRET", "RESEND_API_KEY", "SITE_URL"]
     },
     "lint": {
       "dependsOn": ["^build"]
