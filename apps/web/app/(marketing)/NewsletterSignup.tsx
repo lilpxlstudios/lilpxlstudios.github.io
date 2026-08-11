@@ -40,7 +40,7 @@ export function NewsletterSignup() {
   }
 
   if (done) {
-    return <p className="text-sm text-ink-500">Check your inbox to confirm your subscription.</p>;
+    return <p className="text-sm text-ink-300">Check your inbox to confirm your subscription.</p>;
   }
 
   return (
@@ -51,12 +51,12 @@ export function NewsletterSignup() {
         placeholder="you@example.com"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="border border-ink-100 rounded-md px-3 py-2 text-sm"
+        className="border border-ink-700 bg-paper-50 rounded-md px-3 py-2 text-sm text-ink-900"
       />
       <button
         type="submit"
         disabled={pending}
-        className="bg-ink-900 text-paper-50 rounded-md px-3 py-2 text-sm disabled:opacity-50"
+        className="bg-accent-500 text-ink-950 rounded-md px-3 py-2 text-sm font-medium disabled:opacity-50"
       >
         {pending ? "…" : "Subscribe"}
       </button>

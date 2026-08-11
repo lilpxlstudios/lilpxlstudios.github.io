@@ -1,7 +1,7 @@
 export const typography = {
   fontFamily: {
-    display: "'Fraunces', serif",
-    body: "'Inter', sans-serif",
+    display: "'Playfair Display', Georgia, serif",
+    body: "'Outfit', system-ui, sans-serif",
   },
   size: {
     xs: "12px",
