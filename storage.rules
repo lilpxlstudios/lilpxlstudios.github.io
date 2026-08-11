@@ -25,6 +25,12 @@ service firebase.storage {
       allow write: if false; // written only by the syncProofsFromDrive function
     }
 
+    // Delivery gallery thumbnails — the read-only final-photos view.
+    match /orders/{orderId}/deliveryThumbs/{fileName} {
+      allow read: if isAdmin() || (isSignedIn() && request.auth.uid == orderClientUid(orderId));
+      allow write: if false; // written only by the syncDeliveryPhotosFromDrive action
+    }
+
     // Selection CSV exports — admin only, per the brief (delivered via email + admin panel).
     match /orders/{orderId}/exports/{fileName} {
       allow read, write: if isAdmin();

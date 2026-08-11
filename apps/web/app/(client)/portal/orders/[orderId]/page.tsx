@@ -10,6 +10,11 @@ async function getOrder(orderId: string): Promise<Order | null> {
   return snap.exists ? (snap.data() as Order) : null;
 }
 
+async function getDeliveryPhotoCount(orderId: string): Promise<number> {
+  const snap = await adminDb.collection("orders").doc(orderId).collection("deliveryPhotos").count().get();
+  return snap.data().count;
+}
+
 async function getInvoice(orderId: string): Promise<{ data: Invoice; downloadUrl: string } | null> {
   const snap = await adminDb.collection("invoices").where("orderId", "==", orderId).limit(1).get();
   if (snap.empty) return null;
@@ -29,7 +34,10 @@ export default async function ClientOrderPage({ params }: { params: Promise<{ or
 
   const canSelect = order.proofsDriveLink && order.selectionState.totalCount > 0;
   const selectionDone = order.selectionState.status === "completed";
-  const invoice = await getInvoice(orderId);
+  const [invoice, deliveryPhotoCount] = await Promise.all([
+    getInvoice(orderId),
+    order.deliveryDriveLink ? getDeliveryPhotoCount(orderId) : Promise.resolve(0),
+  ]);
 
   return (
     <div className="flex flex-col gap-8 max-w-xl">
@@ -41,15 +49,13 @@ export default async function ClientOrderPage({ params }: { params: Promise<{ or
         <p className="text-ink-500 text-sm">{new Date(order.shootDate).toLocaleDateString()}</p>
       </div>
 
-      {order.deliveryDriveLink && (
-        <a
-          href={order.deliveryDriveLink.url}
-          target="_blank"
-          rel="noreferrer"
+      {deliveryPhotoCount > 0 && (
+        <Link
+          href={`/portal/orders/${order.id}/gallery`}
           className="self-start bg-ink-900 text-paper-50 rounded-md px-4 py-2 text-sm"
         >
-          View & download your photos
-        </a>
+          View & download your photos ({deliveryPhotoCount})
+        </Link>
       )}
 
       {canSelect && (

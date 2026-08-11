@@ -1,7 +1,8 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { requireSession } from "@/lib/dal";
 import { adminDb } from "@/lib/firebase/admin";
-import type { Order } from "@lps/shared";
+import type { Order, User } from "@lps/shared";
 
 async function getOrders(clientUid: string): Promise<Order[]> {
   const snap = await adminDb
@@ -14,6 +15,16 @@ async function getOrders(clientUid: string): Promise<Order[]> {
 
 export default async function PortalPage() {
   const session = await requireSession();
+
+  if (!session.admin) {
+    const userSnap = await adminDb.collection("users").doc(session.uid).get();
+    const user = userSnap.data() as User | undefined;
+    const onboarding = user?.onboarding;
+    if (!onboarding?.completedAt && !onboarding?.skippedAt) {
+      redirect("/portal/onboarding");
+    }
+  }
+
   const orders = await getOrders(session.uid);
 
   if (orders.length === 0) {

@@ -1,11 +1,19 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { adminDb, adminStorage } from "@/lib/firebase/admin";
-import { ORDER_STATUS_TRANSITIONS, type Invoice, type Order, type Proof, type SelectionExport } from "@lps/shared";
+import {
+  ORDER_STATUS_TRANSITIONS,
+  type DeliveryPhoto,
+  type Invoice,
+  type Order,
+  type Proof,
+  type SelectionExport,
+} from "@lps/shared";
 import { StatusForm } from "./StatusForm";
 import { DriveLinkForm } from "./DriveLinkForm";
 import { AmountForm } from "./AmountForm";
 import { SyncProofsButton } from "./SyncProofsButton";
+import { SyncDeliveryButton } from "./SyncDeliveryButton";
 import { ReopenSelectionButton } from "./ReopenSelectionButton";
 import { GenerateInvoiceButton } from "./GenerateInvoiceButton";
 
@@ -17,6 +25,16 @@ async function getOrder(orderId: string): Promise<Order | null> {
 async function getProofs(orderId: string): Promise<Proof[]> {
   const snap = await adminDb.collection("orders").doc(orderId).collection("proofs").orderBy("index").get();
   return snap.docs.map((doc) => doc.data() as Proof);
+}
+
+async function getDeliveryPhotos(orderId: string): Promise<DeliveryPhoto[]> {
+  const snap = await adminDb
+    .collection("orders")
+    .doc(orderId)
+    .collection("deliveryPhotos")
+    .orderBy("index")
+    .get();
+  return snap.docs.map((doc) => doc.data() as DeliveryPhoto);
 }
 
 async function getInvoice(orderId: string): Promise<{ data: Invoice; downloadUrl: string } | null> {
@@ -52,8 +70,9 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ or
   const order = await getOrder(orderId);
   if (!order) notFound();
 
-  const [proofs, latestExport, invoice] = await Promise.all([
+  const [proofs, deliveryPhotos, latestExport, invoice] = await Promise.all([
     getProofs(orderId),
+    getDeliveryPhotos(orderId),
     getLatestExport(orderId),
     getInvoice(orderId),
   ]);
@@ -133,6 +152,28 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ or
                   key={proof.id}
                   src={proof.thumbUrl ?? undefined}
                   alt={proof.fileName}
+                  className="aspect-square object-cover rounded"
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {order.deliveryDriveLink && (
+        <div className="flex flex-col gap-3 border-t border-ink-100 pt-6">
+          <p className="text-sm text-ink-700 font-medium">
+            Delivery gallery ({deliveryPhotos.length} synced)
+          </p>
+          <SyncDeliveryButton orderId={order.id} />
+          {deliveryPhotos.length > 0 && (
+            <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+              {deliveryPhotos.slice(0, 12).map((photo) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  key={photo.id}
+                  src={photo.thumbUrl ?? undefined}
+                  alt={photo.fileName}
                   className="aspect-square object-cover rounded"
                 />
               ))}

@@ -1,5 +1,16 @@
 import { z } from "zod";
 
+// The studio's current bookable packages — shared by the public pricing
+// calculator, the admin booking form, and the client onboarding form so
+// they never drift out of sync with each other.
+export const PACKAGE_OPTIONS = [
+  { value: "western", label: "Maternity — Western" },
+  { value: "traditional", label: "Maternity — Traditional" },
+  { value: "outdoor", label: "Maternity — Outdoor" },
+  { value: "familyBaby", label: "Family & Baby" },
+] as const;
+export type PackageOptionValue = (typeof PACKAGE_OPTIONS)[number]["value"];
+
 export const ORDER_STATUSES = [
   "inquiry",
   "booked",
@@ -83,6 +94,18 @@ export const proofSchema = z.object({
   index: z.number().int().nonnegative(),
 });
 export type Proof = z.infer<typeof proofSchema>;
+
+// Final, delivered photos synced from the delivery Drive folder — a read-only
+// gallery for the client, distinct from `proofs` (which exist to be selected).
+export const deliveryPhotoSchema = z.object({
+  id: z.string(),
+  fileName: z.string(),
+  driveFileId: z.string(),
+  thumbStoragePath: z.string(),
+  thumbUrl: z.string().url().nullable(),
+  index: z.number().int().nonnegative(),
+});
+export type DeliveryPhoto = z.infer<typeof deliveryPhotoSchema>;
 
 export const selectionExportSchema = z.object({
   id: z.string(),

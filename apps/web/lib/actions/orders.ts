@@ -8,14 +8,17 @@ import { adminDb } from "@/lib/firebase/admin";
 import { checkDriveFolderAccess } from "@/lib/googleDrive";
 import {
   ORDER_STATUSES,
+  PACKAGE_OPTIONS,
   canTransitionOrderStatus,
   type Order,
   type OrderStatus,
 } from "@lps/shared";
 
+const packageValues = PACKAGE_OPTIONS.map((p) => p.value) as [string, ...string[]];
+
 const createOrderSchema = z.object({
   clientUid: z.string().min(1),
-  shootType: z.string().min(1, "Shoot type is required"),
+  shootType: z.enum(packageValues, { message: "Select a package" }),
   shootDate: z.string().min(1, "Shoot date is required"),
   amountDue: z.coerce.number().nonnegative().default(0),
 });
@@ -41,6 +44,8 @@ export async function createOrder(
     return { status: "error", message: parsed.error.issues[0]!.message };
   }
 
+  const shootTypeLabel = PACKAGE_OPTIONS.find((p) => p.value === parsed.data.shootType)!.label;
+
   const now = Date.now();
   const orderRef = adminDb.collection("orders").doc();
   const order: Order = {
@@ -48,7 +53,7 @@ export async function createOrder(
     clientUid: parsed.data.clientUid,
     clientName,
     clientEmail,
-    shootType: parsed.data.shootType,
+    shootType: shootTypeLabel,
     shootDate: new Date(parsed.data.shootDate).getTime(),
     status: "inquiry",
     proofsDriveLink: null,

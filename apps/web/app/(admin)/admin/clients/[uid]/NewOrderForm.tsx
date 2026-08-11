@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { createOrder, type FormState } from "@/lib/actions/orders";
+import { PACKAGE_OPTIONS } from "@lps/shared";
 
 const initialState: FormState = { status: "idle" };
 
@@ -21,15 +22,24 @@ export function NewOrderForm({
     <form action={action} className="flex flex-col gap-3 max-w-md">
       <div className="flex flex-col gap-1">
         <label htmlFor="shootType" className="text-sm text-ink-700">
-          Shoot type
+          Package
         </label>
-        <input
+        <select
           id="shootType"
           name="shootType"
-          placeholder="Wedding, portrait, event…"
           required
+          defaultValue=""
           className="border border-ink-100 rounded-md px-3 py-2"
-        />
+        >
+          <option value="" disabled>
+            Select a package
+          </option>
+          {PACKAGE_OPTIONS.map((p) => (
+            <option key={p.value} value={p.value}>
+              {p.label}
+            </option>
+          ))}
+        </select>
       </div>
       <div className="flex flex-col gap-1">
         <label htmlFor="shootDate" className="text-sm text-ink-700">

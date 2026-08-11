@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import { clientAuth } from "@/lib/firebase/client";
 
 export function LoginForm() {
@@ -11,6 +11,8 @@ export function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const [mode, setMode] = useState<"signIn" | "reset">("signIn");
+  const [resetSent, setResetSent] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -39,6 +41,68 @@ export function LoginForm() {
     } finally {
       setPending(false);
     }
+  }
+
+  async function handleReset(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setPending(true);
+
+    try {
+      await sendPasswordResetEmail(clientAuth, email);
+      setResetSent(true);
+    } catch {
+      // Don't reveal whether the email exists — same message either way.
+      setResetSent(true);
+    } finally {
+      setPending(false);
+    }
+  }
+
+  if (mode === "reset") {
+    return (
+      <div className="flex flex-col gap-4 w-full max-w-sm">
+        {resetSent ? (
+          <p className="text-sm text-success-500">
+            If an account exists for that email, a password reset link is on its way.
+          </p>
+        ) : (
+          <form onSubmit={handleReset} className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1">
+              <label htmlFor="reset-email" className="text-sm text-ink-700">
+                Email
+              </label>
+              <input
+                id="reset-email"
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="border border-ink-100 rounded-md px-3 py-2"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={pending}
+              className="bg-ink-900 text-paper-50 rounded-md px-4 py-2 disabled:opacity-50"
+            >
+              {pending ? "Sending…" : "Send reset link"}
+            </button>
+          </form>
+        )}
+        <button
+          type="button"
+          onClick={() => {
+            setMode("signIn");
+            setResetSent(false);
+            setError(null);
+          }}
+          className="text-sm text-ink-500 underline self-start"
+        >
+          ← Back to sign in
+        </button>
+      </div>
+    );
   }
 
   return (
@@ -76,6 +140,13 @@ export function LoginForm() {
         className="bg-ink-900 text-paper-50 rounded-md px-4 py-2 disabled:opacity-50"
       >
         {pending ? "Signing in…" : "Sign in"}
+      </button>
+      <button
+        type="button"
+        onClick={() => setMode("reset")}
+        className="text-sm text-ink-500 underline self-start"
+      >
+        Forgot password?
       </button>
     </form>
   );

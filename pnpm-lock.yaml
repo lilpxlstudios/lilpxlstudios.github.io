@@ -54,6 +54,9 @@ importers:
       react-dom:
         specifier: 19.2.8
         version: 19.2.8(react@19.2.8)
+      resend:
+        specifier: ^6.19.0
+        version: 6.19.0
       server-only:
         specifier: ^0.0.1
         version: 0.0.1

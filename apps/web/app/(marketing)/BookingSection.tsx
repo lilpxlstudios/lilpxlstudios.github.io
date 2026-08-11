@@ -3,19 +3,12 @@
 import { useState } from "react";
 import { doc, setDoc, collection } from "firebase/firestore";
 import { clientDb } from "@/lib/firebase/client";
-import type { Inquiry } from "@lps/shared";
+import { PACKAGE_OPTIONS, type Inquiry } from "@lps/shared";
 import { studioContact } from "./siteConfig";
 import { Reveal } from "./Reveal";
 
 const inputClass =
   "rounded-md border border-ink-100 px-3 py-2 outline-none transition focus:border-accent-500 focus:ring-1 focus:ring-accent-400";
-
-const SHOOT_TYPES = [
-  { value: "western", label: "Maternity — Western" },
-  { value: "traditional", label: "Maternity — Traditional" },
-  { value: "outdoor", label: "Maternity — Outdoor" },
-  { value: "familyBaby", label: "Family & Baby" },
-];
 
 export function BookingSection() {
   const [name, setName] = useState("");
@@ -35,7 +28,7 @@ export function BookingSection() {
 
     try {
       const ref = doc(collection(clientDb, "inquiries"));
-      const shootTypeLabel = SHOOT_TYPES.find((s) => s.value === shootType)?.label ?? null;
+      const shootTypeLabel = PACKAGE_OPTIONS.find((s) => s.value === shootType)?.label ?? null;
       const message = [
         date ? `Approximate session date / due date: ${date}` : null,
         notes || null,
@@ -192,7 +185,7 @@ export function BookingSection() {
                   <option value="" disabled>
                     Select Session Type
                   </option>
-                  {SHOOT_TYPES.map((s) => (
+                  {PACKAGE_OPTIONS.map((s) => (
                     <option key={s.value} value={s.value}>
                       {s.label}
                     </option>
