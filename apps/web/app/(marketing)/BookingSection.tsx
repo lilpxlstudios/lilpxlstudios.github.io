@@ -5,13 +5,16 @@ import { doc, setDoc, collection } from "firebase/firestore";
 import { clientDb } from "@/lib/firebase/client";
 import type { Inquiry } from "@lps/shared";
 import { studioContact } from "./siteConfig";
+import { Reveal } from "./Reveal";
+
+const inputClass =
+  "rounded-md border border-ink-100 px-3 py-2 outline-none transition focus:border-accent-500 focus:ring-1 focus:ring-accent-400";
 
 const SHOOT_TYPES = [
-  { value: "maternity", label: "Maternity Photoshoot" },
-  { value: "newborn", label: "Newborn Baby Photoshoot" },
-  { value: "toddler", label: "Toddler / Cake Smash" },
-  { value: "family", label: "Family Portraits" },
-  { value: "combo", label: "Maternity & Baby Combo" },
+  { value: "western", label: "Maternity — Western" },
+  { value: "traditional", label: "Maternity — Traditional" },
+  { value: "outdoor", label: "Maternity — Outdoor" },
+  { value: "familyBaby", label: "Family & Baby" },
 ];
 
 export function BookingSection() {
@@ -61,12 +64,22 @@ export function BookingSection() {
   }
 
   return (
-    <section id="contact" className="mx-auto max-w-6xl px-6 py-16 sm:py-24">
-      <div className="grid gap-6 lg:grid-cols-2">
+    <section id="contact" className="mx-auto max-w-6xl px-6 py-20 sm:py-28">
+      <Reveal className="mx-auto mb-10 flex max-w-lg flex-col items-center gap-3 text-center">
+        <span className="text-xs font-medium uppercase tracking-[0.25em] text-accent-600">
+          Get In Touch
+        </span>
+        <h2 className="font-[family-name:var(--font-display)] text-4xl tracking-tight text-ink-900 sm:text-5xl">
+          Start Your Photo Journey
+        </h2>
+        <div className="h-0.5 w-12 bg-accent-500" />
+      </Reveal>
+
+      <Reveal delay={150} className="grid gap-6 lg:grid-cols-2">
         <div className="flex flex-col gap-6 rounded-2xl border border-ink-100 bg-paper-50 p-6 shadow-sm sm:p-8">
           <div>
             <h3 className="font-[family-name:var(--font-display)] text-2xl text-ink-900">
-              Start Your Photo Journey
+              Reach Us Directly
             </h3>
             <p className="mt-2 text-ink-500">
               Have questions about packages, props, or locations? Drop us a line and we will get
@@ -106,7 +119,7 @@ export function BookingSection() {
             href={studioContact.mapsUrl}
             target="_blank"
             rel="noopener"
-            className="mt-2 flex w-fit items-center gap-2 rounded-md border border-accent-500 px-4 py-2 text-sm text-accent-600 transition hover:bg-accent-400/10"
+            className="mt-2 flex w-fit items-center gap-2 rounded-md border border-accent-500 px-4 py-2 text-sm text-accent-600 transition hover:-translate-y-0.5 hover:bg-accent-400/10"
           >
             Open in Google Maps
           </a>
@@ -132,7 +145,7 @@ export function BookingSection() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Your Name"
-                    className="rounded-md border border-ink-100 px-3 py-2"
+                    className={inputClass}
                   />
                 </div>
                 <div className="flex flex-col gap-1">
@@ -145,7 +158,7 @@ export function BookingSection() {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="Your WhatsApp Number"
-                    className="rounded-md border border-ink-100 px-3 py-2"
+                    className={inputClass}
                   />
                 </div>
               </div>
@@ -161,7 +174,7 @@ export function BookingSection() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
-                  className="rounded-md border border-ink-100 px-3 py-2"
+                  className={inputClass}
                 />
               </div>
 
@@ -174,7 +187,7 @@ export function BookingSection() {
                   required
                   value={shootType}
                   onChange={(e) => setShootType(e.target.value)}
-                  className="rounded-md border border-ink-100 px-3 py-2"
+                  className={inputClass}
                 >
                   <option value="" disabled>
                     Select Session Type
@@ -196,7 +209,7 @@ export function BookingSection() {
                   type="date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  className="rounded-md border border-ink-100 px-3 py-2"
+                  className={inputClass}
                 />
               </div>
 
@@ -210,7 +223,7 @@ export function BookingSection() {
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="Tell us about your baby's due date, preferred props, or ECR beach locations..."
-                  className="rounded-md border border-ink-100 px-3 py-2"
+                  className={inputClass}
                 />
               </div>
 
@@ -219,14 +232,14 @@ export function BookingSection() {
               <button
                 type="submit"
                 disabled={pending}
-                className="rounded-md bg-ink-900 px-4 py-3 text-sm font-medium text-paper-50 transition hover:bg-ink-700 disabled:opacity-50"
+                className="rounded-md bg-ink-900 px-4 py-3.5 text-sm font-medium text-paper-50 shadow-sm transition hover:-translate-y-0.5 hover:bg-ink-700 hover:shadow-md disabled:pointer-events-none disabled:opacity-50"
               >
                 {pending ? "Sending…" : "Send Booking Request"}
               </button>
             </form>
           )}
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }

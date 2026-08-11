@@ -57,7 +57,7 @@ export function ContactForm() {
           required
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="border border-ink-100 rounded-md px-3 py-2"
+          className="border border-ink-100 rounded-md px-3 py-2 outline-none transition focus:border-accent-500 focus:ring-1 focus:ring-accent-400"
         />
       </div>
       <div className="flex flex-col gap-1 text-left">
@@ -70,7 +70,7 @@ export function ContactForm() {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="border border-ink-100 rounded-md px-3 py-2"
+          className="border border-ink-100 rounded-md px-3 py-2 outline-none transition focus:border-accent-500 focus:ring-1 focus:ring-accent-400"
         />
       </div>
       <div className="flex flex-col gap-1 text-left">
@@ -81,7 +81,7 @@ export function ContactForm() {
           id="phone"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
-          className="border border-ink-100 rounded-md px-3 py-2"
+          className="border border-ink-100 rounded-md px-3 py-2 outline-none transition focus:border-accent-500 focus:ring-1 focus:ring-accent-400"
         />
       </div>
       <div className="flex flex-col gap-1 text-left">
@@ -93,7 +93,7 @@ export function ContactForm() {
           value={shootTypeInterest}
           onChange={(e) => setShootTypeInterest(e.target.value)}
           placeholder="Wedding, portrait, event…"
-          className="border border-ink-100 rounded-md px-3 py-2"
+          className="border border-ink-100 rounded-md px-3 py-2 outline-none transition focus:border-accent-500 focus:ring-1 focus:ring-accent-400"
         />
       </div>
       <div className="flex flex-col gap-1 text-left">
@@ -106,14 +106,14 @@ export function ContactForm() {
           rows={4}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          className="border border-ink-100 rounded-md px-3 py-2"
+          className="border border-ink-100 rounded-md px-3 py-2 outline-none transition focus:border-accent-500 focus:ring-1 focus:ring-accent-400"
         />
       </div>
       {error && <p className="text-sm text-danger-500">{error}</p>}
       <button
         type="submit"
         disabled={pending}
-        className="bg-ink-900 text-paper-50 rounded-md px-4 py-2 disabled:opacity-50"
+        className="bg-ink-900 text-paper-50 rounded-md px-4 py-3 shadow-sm transition hover:-translate-y-0.5 hover:bg-ink-700 hover:shadow-md disabled:pointer-events-none disabled:opacity-50"
       >
         {pending ? "Sending…" : "Send message"}
       </button>

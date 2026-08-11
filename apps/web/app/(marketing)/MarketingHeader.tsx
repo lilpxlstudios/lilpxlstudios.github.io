@@ -15,13 +15,16 @@ export function MarketingHeader() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-ink-100 bg-paper-50/90 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-ink-100 bg-paper-50/90 shadow-sm backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link href="/" className="font-[family-name:var(--font-display)] text-lg text-ink-900">
+        <Link
+          href="/"
+          className="font-[family-name:var(--font-display)] text-lg tracking-tight text-ink-900"
+        >
           Little Pixel <span className="text-accent-600">Studios</span>
         </Link>
 
-        <nav className="hidden gap-6 text-sm text-ink-700 md:flex">
+        <nav className="hidden gap-8 text-sm text-ink-700 md:flex">
           {NAV_LINKS.map((link) => (
             <Link key={link.href} href={link.href} className="transition hover:text-accent-600">
               {link.label}
@@ -39,7 +42,7 @@ export function MarketingHeader() {
             )}`}
             target="_blank"
             rel="noopener"
-            className="hidden rounded-md bg-ink-900 px-4 py-2 text-sm font-medium text-paper-50 transition hover:bg-ink-700 sm:inline-flex"
+            className="hidden rounded-md bg-ink-900 px-4 py-2.5 text-sm font-medium text-paper-50 shadow-sm transition hover:-translate-y-0.5 hover:bg-ink-700 hover:shadow-md sm:inline-flex"
           >
             Book Slot
           </a>

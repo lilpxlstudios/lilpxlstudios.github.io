@@ -51,12 +51,12 @@ export function NewsletterSignup() {
         placeholder="you@example.com"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="border border-ink-700 bg-paper-50 rounded-md px-3 py-2 text-sm text-ink-900"
+        className="border border-ink-700 bg-paper-50 rounded-md px-3 py-2 text-sm text-ink-900 outline-none transition focus:border-accent-400 focus:ring-1 focus:ring-accent-400"
       />
       <button
         type="submit"
         disabled={pending}
-        className="bg-accent-500 text-ink-950 rounded-md px-3 py-2 text-sm font-medium disabled:opacity-50"
+        className="bg-accent-500 text-ink-950 rounded-md px-3 py-2 text-sm font-medium transition hover:-translate-y-0.5 hover:bg-accent-400 disabled:pointer-events-none disabled:opacity-50"
       >
         {pending ? "…" : "Subscribe"}
       </button>

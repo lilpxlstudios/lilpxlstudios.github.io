@@ -17,3 +17,5 @@ ui-debug.log
 *.tsbuildinfo
 .DS_Store
 serviceAccountKey.json
+.vercel
+.env*

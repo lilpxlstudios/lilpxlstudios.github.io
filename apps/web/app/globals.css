@@ -29,6 +29,15 @@
   --font-body: var(--font-body);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: var(--font-body);
+}
+
+::selection {
+  background-color: var(--color-accent-400);
+  color: var(--color-ink-950);
 }
