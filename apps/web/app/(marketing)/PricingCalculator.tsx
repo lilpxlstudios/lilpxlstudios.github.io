@@ -3,14 +3,10 @@
 import { useMemo, useState } from "react";
 import { whatsappLink } from "./siteConfig";
 
-type ShootType = "maternity" | "newborn" | "combo";
 type Location = "studio" | "outdoor" | "both";
 
-const SHOOT_TILES: { value: ShootType; label: string; base: number }[] = [
-  { value: "maternity", label: "Maternity", base: 6000 },
-  { value: "newborn", label: "Newborn", base: 8000 },
-  { value: "combo", label: "Maternity + Baby", base: 12000 },
-];
+const MATERNITY_BASE_PRICE = 14000;
+const PACKAGE_LABEL = "Maternity Session";
 
 const LOCATIONS: { value: Location; label: string; price: number }[] = [
   { value: "studio", label: "Cozy Indoor Studio (Palavakkam)", price: 0 },
@@ -24,35 +20,14 @@ const ADDONS = [
   { key: "album", label: "Physical Premium Matte Photo Album (20 Pages)", price: 3000 },
 ] as const;
 
-const BASE_INCLUSIONS: Record<ShootType, string[]> = {
-  maternity: [
-    "2-Hour photoshoot session",
-    "20 Fine-art edited soft copies",
-    "Private online viewing gallery",
-    "Cozy studio setting",
-  ],
-  newborn: [
-    "3-Hour specialized safe session",
-    "15 Fine-art edited soft copies",
-    "Full access to premium props & wraps",
-    "Safe temperature-controlled environment",
-  ],
-  combo: [
-    "2 Separate photo sessions",
-    "35 Total edited soft copies",
-    "Full access to gowns & prop closets",
-    "Includes outdoor beach & studio settings",
-  ],
-};
-
-const PACKAGE_LABEL: Record<ShootType, string> = {
-  maternity: "Maternity Session",
-  newborn: "Newborn Session",
-  combo: "Maternity & Baby Combo Package",
-};
+const BASE_INCLUSIONS = [
+  "2 curated looks / outfit changes",
+  "20 Fine-art edited soft copies",
+  "Private online viewing gallery",
+  "Cozy studio setting",
+];
 
 export function PricingCalculator() {
-  const [shootType, setShootType] = useState<ShootType>("maternity");
   const [location, setLocation] = useState<Location>("studio");
   const [addons, setAddons] = useState<Record<string, boolean>>({});
 
@@ -61,23 +36,22 @@ export function PricingCalculator() {
   }
 
   const { totalPrice, inclusions } = useMemo(() => {
-    const base = SHOOT_TILES.find((t) => t.value === shootType)!.base;
     const locationPrice = LOCATIONS.find((l) => l.value === location)!.price;
     const addonsPrice = ADDONS.reduce((sum, a) => (addons[a.key] ? sum + a.price : sum), 0);
 
-    const inclusions = [...BASE_INCLUSIONS[shootType]];
+    const inclusions = [...BASE_INCLUSIONS];
     if (location === "outdoor") inclusions.push("ECR Golden Hour beach location");
     if (location === "both") inclusions.push("Both studio & beach locations included");
     if (addons.makeup) inclusions.push("Professional makeup artist session");
     if (addons.gowns) inclusions.push("Premium gown & outfit access");
     if (addons.album) inclusions.push("Physical premium photo album (20 pages)");
 
-    return { totalPrice: base + locationPrice + addonsPrice, inclusions };
-  }, [shootType, location, addons]);
+    return { totalPrice: MATERNITY_BASE_PRICE + locationPrice + addonsPrice, inclusions };
+  }, [location, addons]);
 
   const whatsappHref = whatsappLink(
     `Hi Little Pixel Studios! I built a custom package on your website:
-- Shoot Type: ${PACKAGE_LABEL[shootType]}
+- Package: ${PACKAGE_LABEL}
 - Location: ${location.toUpperCase()}
 - Professional Makeup: ${addons.makeup ? "Yes" : "No"}
 - Outfit Gowns Rental: ${addons.gowns ? "Yes" : "No"}
@@ -108,34 +82,16 @@ I would like to discuss slots availability!`
           <div className="mt-2 mb-6 h-px w-10 bg-accent-500" />
 
           <div className="flex flex-col gap-6">
-            <div>
-              <label className="text-sm font-medium text-ink-700">
-                1. Select Photoshoot Type
-              </label>
-              <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
-                {SHOOT_TILES.map((tile) => (
-                  <button
-                    key={tile.value}
-                    type="button"
-                    onClick={() => setShootType(tile.value)}
-                    className={`flex flex-col items-center gap-1 rounded-lg border px-4 py-4 text-center transition ${
-                      shootType === tile.value
-                        ? "border-accent-500 bg-accent-400/10"
-                        : "border-ink-100 hover:border-ink-300"
-                    }`}
-                  >
-                    <span className="text-sm font-medium text-ink-900">{tile.label}</span>
-                    <span className="text-xs text-ink-500">
-                      Base: ₹{tile.base.toLocaleString("en-IN")}
-                    </span>
-                  </button>
-                ))}
-              </div>
+            <div className="rounded-lg border border-accent-500 bg-accent-400/10 px-4 py-4">
+              <span className="text-sm font-medium text-ink-900">{PACKAGE_LABEL}</span>
+              <span className="ml-2 text-xs text-ink-500">
+                Starts from ₹{MATERNITY_BASE_PRICE.toLocaleString("en-IN")} for two looks
+              </span>
             </div>
 
             <div>
               <label htmlFor="pricing-location" className="text-sm font-medium text-ink-700">
-                2. Select Location Preference
+                1. Select Location Preference
               </label>
               <select
                 id="pricing-location"
@@ -153,7 +109,7 @@ I would like to discuss slots availability!`
 
             <div>
               <label className="text-sm font-medium text-ink-700">
-                3. Add Premium Customizations
+                2. Add Premium Customizations
               </label>
               <div className="mt-3 flex flex-col gap-2">
                 {ADDONS.map((addon) => (
@@ -182,7 +138,7 @@ I would like to discuss slots availability!`
         <div className="flex flex-col rounded-2xl bg-ink-900 p-6 text-paper-50 shadow-lg sm:p-8">
           <span className="text-sm text-ink-300">Your Custom Estimate</span>
           <span className="font-[family-name:var(--font-display)] text-lg text-accent-400">
-            {PACKAGE_LABEL[shootType]}
+            {PACKAGE_LABEL}
           </span>
 
           <div className="mt-6 flex items-baseline gap-1">

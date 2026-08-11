@@ -18,7 +18,6 @@ const SLIDES = [
 
 const TRUST_METRICS = [
   { value: "500+", label: "Happy Families" },
-  { value: "100%", label: "Newborn Safety Record" },
   { value: "ECR", label: "Golden Hour Beach Shoots" },
 ];
 
@@ -34,10 +33,6 @@ export function Hero() {
     <section className="border-b border-ink-100 bg-paper-100">
       <div className="mx-auto grid max-w-6xl gap-12 px-6 py-16 sm:py-24 lg:grid-cols-2 lg:items-center">
         <div className="flex flex-col gap-6">
-          <div className="inline-flex w-fit items-center gap-2 rounded-full bg-paper-50 px-4 py-1.5 text-sm text-ink-700 shadow-sm">
-            <span aria-hidden className="text-accent-500">★</span>
-            Rated 5.0 on Google Business
-          </div>
           <h1 className="font-[family-name:var(--font-display)] text-4xl leading-tight text-ink-900 sm:text-5xl">
             Preserving Your Family&apos;s Sweetest Milestones
           </h1>

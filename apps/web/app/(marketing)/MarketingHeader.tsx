@@ -6,7 +6,6 @@ import { WHATSAPP_NUMBER } from "./siteConfig";
 
 const NAV_LINKS = [
   { href: "/#portfolio", label: "Portfolio" },
-  { href: "/#about", label: "Safety & Story" },
   { href: "/#pricing", label: "Packages" },
   { href: "/#testimonials", label: "Reviews" },
   { href: "/#contact", label: "Contact Us" },
@@ -36,7 +35,7 @@ export function MarketingHeader() {
         <div className="flex items-center gap-3">
           <a
             href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-              "Hi Little Pixel Studios, I'd like to inquire about a photoshoot session!"
+              "Hi this is I would like to book a slot for photoshoot"
             )}`}
             target="_blank"
             rel="noopener"

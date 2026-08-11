@@ -38,9 +38,6 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
             <Link href="/#portfolio" className="text-ink-300 hover:text-accent-400">
               Portfolios
             </Link>
-            <Link href="/#about" className="text-ink-300 hover:text-accent-400">
-              Safety & Story
-            </Link>
             <Link href="/#pricing" className="text-ink-300 hover:text-accent-400">
               Packages
             </Link>
