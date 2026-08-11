@@ -2,7 +2,9 @@
   "name": "@lps/functions",
   "version": "0.0.0",
   "private": true,
-  "engines": { "node": "20" },
+  "engines": {
+    "node": "20"
+  },
   "main": "lib/index.js",
   "scripts": {
     "build": "bash scripts/vendor-shared.sh && tsc",
@@ -14,6 +16,7 @@
     "@lps/shared": "file:vendor/lps-shared",
     "firebase-admin": "^13.0.2",
     "firebase-functions": "^6.1.0",
+    "resend": "^6.19.0",
     "zod": "^3.24.1"
   },
   "devDependencies": {

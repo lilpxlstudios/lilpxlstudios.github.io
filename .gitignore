@@ -9,6 +9,7 @@ vendor/
 .env
 .env.local
 .env.*.local
+.secret.local
 firebase-debug.log
 firestore-debug.log
 ui-debug.log

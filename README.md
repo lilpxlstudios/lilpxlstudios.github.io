@@ -20,10 +20,32 @@ payments, invoicing) and, later, the React Native mobile apps.
 6. Grant yourself the admin role: `pnpm set-admin-claim you@littlepixelstudios.com` (requires `FIREBASE_SERVICE_ACCOUNT_KEY` set in your shell).
 7. Start the app: `pnpm dev` (runs `apps/web` on http://localhost:3000). For full local testing with Firestore/Auth/Storage/Functions emulators, run `pnpm emulators` in another terminal.
 
-## External accounts needed later (M4–M7)
+## Email (Resend)
 
-- Razorpay (test mode first) — for payments
-- SendGrid — for admin alerts, client emails, and the newsletter
+Admin alerts (new inquiry, order selection completed), the newsletter double
+opt-in link, and any future client emails send via
+[Resend](https://resend.com) (`functions/src/email.ts`). Until
+littlepixelstudios.com is verified as a sending domain in Resend (M7), mail
+sends from Resend's shared `onboarding@resend.dev` address, which only
+delivers to the Resend account's own inbox — fine for dev/testing, not for
+real recipients.
+
+Set the secret before deploying or running the emulator:
+
+```
+firebase functions:secrets:set RESEND_API_KEY
+```
+
+For local emulator testing, put the same value in `functions/.secret.local`
+(gitignored, read automatically by `firebase emulators:start`):
+
+```
+RESEND_API_KEY=re_your_key_here
+```
+
+## External accounts needed later (M7)
+
 - Google Cloud service account with Drive API enabled — for proof-photo syncing
 - Anthropic API key — for the marketing content-drafting helper
-- Domain DNS access for littlepixelstudios.com — for final hosting + email auth records
+- Domain DNS access for littlepixelstudios.com — for final hosting, verified
+  Resend sending domain, and email auth records
