@@ -1,45 +1,74 @@
 # Little Pixel Studios — Handoff
 
 Photography business platform for littlepixelstudios.com: marketing site, client portal, photo
-selection/delivery, payments, invoicing. Owner: Magesh Sadasivam (smagesh9999@gmail.com).
+selection/delivery, payments, invoicing. Originally built by Magesh Sadasivam under his personal
+Google account (`smagesh9999@gmail.com`); mid-migration to a dedicated studio account
+(`lilpxlstudios@gmail.com`) as of 2026-08-12, including switching which Claude account/machine
+drives the work. **If you are a fresh Claude Code session picking this project up: read this whole
+file before doing anything — it's written to be your onboarding context, since Claude's own memory
+of this project is local to the original machine and does not travel with an account switch.**
 
-## Access you should now have (or need to request)
+## Continuing on a new machine, under the lilpxlstudios Claude account
 
-- **GitHub**: `github.com/lilpxlstudios/lilpxlstudios.github.io` — ask the owner to add you as a
-  collaborator if you don't have Write access yet.
-- **Vercel**: team `lilpxlstudios-1430s-projects`, project `web` — ask the owner to invite you at
-  `vercel.com/teams/lilpxlstudios-1430s-projects/settings/members`.
-- **Firebase/GCP**: `littlepixelstudios-dev` — you (`lilpxlstudios@gmail.com`) have `roles/editor`.
-  Enough to manage Firestore/Storage/Auth/Functions; not billing or IAM. Ask for Owner if you need
-  those.
+1. Log into Claude Code with the `lilpxlstudios` Claude account.
+2. Clone the repo and check out the active branch (main is an unrelated old static site):
+   ```
+   git clone git@github.com:lilpxlstudios/lilpxlstudios.github.io.git littlepixelstudios
+   cd littlepixelstudios
+   git checkout nextjs-rebuild
+   ```
+   If SSH isn't set up for GitHub on the new machine yet, use the HTTPS remote instead and
+   authenticate when prompted (a GitHub account with Write access to
+   `lilpxlstudios/lilpxlstudios.github.io` is required — the repo already lives under a
+   `lilpxlstudios` GitHub account, so this should just be logging into that).
+3. Install the Google Cloud SDK and Firebase CLI if not already present, then:
+   ```
+   gcloud auth login lilpxlstudios@gmail.com
+   gcloud config set project littlepixelstudios-dev
+   firebase login    # log in as lilpxlstudios@gmail.com when the browser opens
+   ```
+4. Install the Vercel CLI (or use `npx vercel`) and log in — the Vercel team
+   (`lilpxlstudios-1430s-projects`) already appears to be a standalone account under the
+   `lilpxlstudios` identity (its only member, confirmed 2026-08-12), not shared with `smagesh9999`,
+   so this is likely just logging into an account you already own rather than requesting an invite.
+   Then:
+   ```
+   npx vercel link       # link this checkout to the `web` project
+   npx vercel env pull apps/web/.env.local
+   ```
+   This recreates all local secrets except Razorpay's (still unset everywhere — see Blockers).
+5. `pnpm install && pnpm dev`, confirm `localhost:3000` loads.
+6. Tell your new Claude session to treat this file as its starting context, and mention anything
+   that's changed since 2026-08-12 that isn't reflected here yet.
 
 ## Account migration status (smagesh9999@gmail.com → lilpxlstudios@gmail.com)
 
-This project originally started under the owner's personal Google account
-(`smagesh9999@gmail.com`) and is being moved to the studio account (`lilpxlstudios@gmail.com`).
-As of 2026-08-12:
-
-- **GCP/Firebase project (`littlepixelstudios-dev`)**: `lilpxlstudios@gmail.com` has `roles/editor`.
-  `smagesh9999@gmail.com` remains `roles/owner` — a deliberate choice for now (avoids lockout risk),
-  not yet a full ownership transfer.
+- **GCP/Firebase project (`littlepixelstudios-dev`)**: `lilpxlstudios@gmail.com` has `roles/editor`
+  and `roles/billing.projectManager` (the latter granted specifically so it can link/unlink the
+  project's billing account without needing full Owner). `smagesh9999@gmail.com` remains
+  `roles/owner` — a deliberate choice, not yet a full ownership transfer, to avoid lockout risk.
 - **Billing**: still on the original billing account, owned solely by `smagesh9999@gmail.com`. Plan
-  is to create a *new* Cloud Billing account under `lilpxlstudios@gmail.com` with its own payment
-  method, then `gcloud billing projects link littlepixelstudios-dev --billing-account=<new-id>` once
-  it exists — not done yet.
-- **Vercel**: the team (`lilpxlstudios-1430s-projects`) already appears to be under a
-  `lilpxlstudios`-branded account, not `smagesh9999` — likely nothing to migrate, but the exact
-  email behind it hasn't been confirmed.
-- **This dev machine's CLI logins** (`gcloud`, `firebase`) are still authenticated as
-  `smagesh9999@gmail.com`. Re-run `gcloud auth login` / `firebase login` as `lilpxlstudios@gmail.com`
-  to switch, if/when that matters.
+  is a *new* Cloud Billing account under `lilpxlstudios@gmail.com` with its own payment method, then
+  `gcloud billing projects link littlepixelstudios-dev --billing-account=<new-id>`. **Attempted
+  2026-08-12, not completed**: `lilpxlstudios@gmail.com` is a brand-new Google Cloud identity (zero
+  existing billing accounts, no Cloud Organization) and hit an unclear issue at
+  `console.cloud.google.com/billing/create` — likely needs the account to complete Google Cloud's
+  first-time welcome/verification flow (accept ToS, possibly phone/ID verification) before the
+  normal "Create account" UI behaves as expected. Deferred by the owner to pick up later; not
+  blocking anything else.
+- **Vercel**: confirmed 2026-08-12 — the team's only member is the `lilpxlstudios-1430` identity,
+  already separate from `smagesh9999`. Nothing to migrate here.
+- **CLI logins on the original dev machine** (`/Users/mageshsadasivam/Documents/claude_projex/littlepixelstudios`):
+  `gcloud` and local git commit identity were switched to `lilpxlstudios@gmail.com` on 2026-08-12.
+  `firebase` CLI on that machine is still logged in as `smagesh9999@gmail.com` (not switched — low
+  priority, only matters for direct `firebase deploy` from that machine).
 - **GitHub**: the repo already lives under a `lilpxlstudios` GitHub account, not `smagesh9999` —
-  nothing to move there. Local git commit identity on the original dev machine was switched to
-  `lilpxlstudios@gmail.com` going forward; historical commits keep `smagesh9999@gmail.com` as
-  author (not rewritten).
+  nothing to move there. Historical commits keep `smagesh9999@gmail.com` as git author (not
+  rewritten — that would rewrite already-pushed history).
 - **Not yet checked**: Resend and Razorpay accounts, and the Squarespace domain-registrar account —
   confirm which email each is registered under.
 
-## Get set up locally
+## Get set up locally (general reference — see the numbered steps above for the new-machine path)
 
 ```
 git clone git@github.com:lilpxlstudios/lilpxlstudios.github.io.git littlepixelstudios
