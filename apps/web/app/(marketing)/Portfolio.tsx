@@ -102,7 +102,7 @@ const ITEMS: { src: string; alt: string; category: Exclude<Category, "all">; tit
     src: "/images/portfolio/western/western-08.jpg",
     alt: "Couple portrait in dark, moody studio lighting",
     category: "western",
-    title: "Midnight Romance",
+    title: "Velvet Nocturne",
   },
   {
     src: "/images/portfolio/western/western-09.jpg",

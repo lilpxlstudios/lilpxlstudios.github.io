@@ -40,13 +40,13 @@ export function Hero() {
       <div className="mx-auto grid max-w-6xl gap-12 px-6 py-20 sm:py-28 lg:grid-cols-2 lg:items-center">
         <div className="flex flex-col gap-6">
           <span className="text-xs font-medium uppercase tracking-[0.25em] text-accent-600">
-            Palavakkam, Chennai
+            Chennai
           </span>
           <h1 className="font-[family-name:var(--font-display)] text-5xl leading-[1.08] tracking-tight text-ink-900 sm:text-6xl">
             Preserving Your Family&apos;s Sweetest Milestones
           </h1>
           <p className="max-w-md text-base text-ink-500 sm:text-lg">
-            Fine-art maternity, newborn, and family portrait photography based in Palavakkam,
+            Fine-art maternity, newborn, and family portrait photography based in
             Chennai. Capturing natural warmth, connection, and timeless emotions.
           </p>
           <div className="flex flex-wrap gap-3">
