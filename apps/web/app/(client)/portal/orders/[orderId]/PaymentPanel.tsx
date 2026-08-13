@@ -48,7 +48,15 @@ function loadCheckoutScript(): Promise<void> {
 
 const POST_PAYMENT_STATUSES: OrderStatus[] = ["paid", "invoiced", "delivered", "archived"];
 
-export function PaymentPanel({ orderId, initialOrder }: { orderId: string; initialOrder: Order }) {
+export function PaymentPanel({
+  orderId,
+  initialOrder,
+  paymentsEnabled,
+}: {
+  orderId: string;
+  initialOrder: Order;
+  paymentsEnabled: boolean;
+}) {
   const [order, setOrder] = useState(initialOrder);
   const [pending, setPending] = useState(false);
   const [confirming, setConfirming] = useState(false);
@@ -74,6 +82,18 @@ export function PaymentPanel({ orderId, initialOrder }: { orderId: string; initi
 
   if (order.status !== "payment_pending") {
     return null;
+  }
+
+  if (!paymentsEnabled) {
+    return (
+      <div className="flex flex-col gap-2 border-t border-ink-100 pt-6">
+        <p className="text-sm text-ink-700 font-medium">Payment</p>
+        <p className="text-sm text-ink-500">
+          ₹{order.amountDue.toLocaleString("en-IN")} due for {order.shootType}. Online payment isn't
+          available yet — we'll follow up separately about payment.
+        </p>
+      </div>
+    );
   }
 
   async function handlePay() {

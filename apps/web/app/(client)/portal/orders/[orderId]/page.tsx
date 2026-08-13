@@ -82,7 +82,11 @@ export default async function ClientOrderPage({ params }: { params: Promise<{ or
         </div>
       )}
 
-      <PaymentPanel orderId={order.id} initialOrder={order} />
+      <PaymentPanel
+        orderId={order.id}
+        initialOrder={order}
+        paymentsEnabled={Boolean(process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET)}
+      />
 
       {invoice && (
         <div className="flex flex-col gap-2 border-t border-ink-100 pt-6">
