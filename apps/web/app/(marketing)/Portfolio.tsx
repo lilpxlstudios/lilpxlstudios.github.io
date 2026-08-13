@@ -4,19 +4,26 @@ import { useState } from "react";
 import Image from "next/image";
 import { Reveal } from "./Reveal";
 
-type Category = "all" | "western" | "traditional" | "outdoor";
+type Category = "all" | "western" | "traditional" | "outdoor" | "headshots" | "events";
+
+// Categories left out of "All Portfolios" — shown only under their own tab.
+const HIDDEN_FROM_ALL: Category[] = ["headshots", "events"];
 
 const TABS: { value: Category; label: string }[] = [
   { value: "all", label: "All Portfolios" },
   { value: "western", label: "Western" },
   { value: "traditional", label: "Traditional" },
   { value: "outdoor", label: "Outdoor" },
+  { value: "headshots", label: "Headshots" },
+  { value: "events", label: "Events" },
 ];
 
 const CATEGORY_LABEL: Record<Exclude<Category, "all">, string> = {
   western: "Western",
   traditional: "Traditional",
   outdoor: "Outdoor",
+  headshots: "Headshots",
+  events: "Events",
 };
 
 const ITEMS: { src: string; alt: string; category: Exclude<Category, "all">; title: string }[] = [
@@ -144,7 +151,10 @@ const ITEMS: { src: string; alt: string; category: Exclude<Category, "all">; tit
 
 export function Portfolio() {
   const [category, setCategory] = useState<Category>("all");
-  const visible = category === "all" ? ITEMS : ITEMS.filter((item) => item.category === category);
+  const visible =
+    category === "all"
+      ? ITEMS.filter((item) => !HIDDEN_FROM_ALL.includes(item.category))
+      : ITEMS.filter((item) => item.category === category);
 
   return (
     <section id="portfolio" className="mx-auto max-w-6xl px-6 py-20 sm:py-28">
