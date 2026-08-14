@@ -69,7 +69,7 @@ const PACKAGES: (FixedPackage | CustomPackage)[] = [
 const ADDONS = [
   { key: "makeup", label: "Professional Makeup & Hair Artist", price: 2500 },
   { key: "gowns", label: "Luxury Gown / Outfit Access", price: 1500 },
-  { key: "album", label: "Physical Premium Matte Photo Album (20 Pages)", price: 3000 },
+  { key: "album", label: "Physical Premium Matte Photo Album (20 Pages)", price: 5000 },
 ] as const;
 
 export function PricingCalculator() {
