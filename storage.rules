@@ -44,5 +44,11 @@ service firebase.storage {
       );
       allow write: if false; // written only by the generateInvoice function
     }
+
+    // Standalone GST tax invoice PDFs — admin-only, generated on demand from /admin/billing.
+    match /taxInvoices/{fileName} {
+      allow read: if isAdmin();
+      allow write: if false; // written only by the createTaxInvoice action
+    }
   }
 }

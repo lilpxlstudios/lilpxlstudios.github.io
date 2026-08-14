@@ -4,6 +4,7 @@ import "./admin";
 
 export { razorpayWebhook } from "./payments";
 export { onInquiryCreated, onNewsletterSubscriberCreated, onSelectionCompleted } from "./marketing";
+export { purgeDeletedClients } from "./clients";
 
 setGlobalOptions({ region: "asia-south1", maxInstances: 10 });
 

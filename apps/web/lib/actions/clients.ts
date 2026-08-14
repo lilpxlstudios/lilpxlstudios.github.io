@@ -99,6 +99,7 @@ export async function createClient(
     onboarding: null,
     createdAt: now,
     updatedAt: now,
+    deletedAt: null,
   };
   await adminDb.collection("users").doc(uid).set(profile);
 
@@ -136,4 +137,32 @@ export async function createClient(
 
   revalidatePath("/admin/clients");
   return { status: "success", resetLink, email, orderId: orderRef.id, emailSent };
+}
+
+export type ClientActionState = { status: "idle" } | { status: "error"; message: string };
+
+// Soft-delete: hides the client from the active roster and disables their
+// Firebase Auth account (blocks new sign-ins; also invalidates their current
+// session, since dal.ts's getSession() calls verifySessionCookie with
+// checkRevoked=true, which rejects disabled accounts). Restorable for 60 days
+// via restoreClient — see functions/src/clients.ts for the automatic purge
+// that runs after that window.
+export async function deleteClient(uid: string, _prevState: ClientActionState): Promise<ClientActionState> {
+  await requireAdmin();
+
+  await adminAuth.updateUser(uid, { disabled: true }).catch(() => null);
+  await adminDb.collection("users").doc(uid).update({ deletedAt: Date.now() });
+
+  revalidatePath("/admin/clients");
+  return { status: "idle" };
+}
+
+export async function restoreClient(uid: string, _prevState: ClientActionState): Promise<ClientActionState> {
+  await requireAdmin();
+
+  await adminAuth.updateUser(uid, { disabled: false }).catch(() => null);
+  await adminDb.collection("users").doc(uid).update({ deletedAt: null });
+
+  revalidatePath("/admin/clients");
+  return { status: "idle" };
 }

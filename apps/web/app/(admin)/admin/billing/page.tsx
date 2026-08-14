@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { adminDb } from "@/lib/firebase/admin";
-import type { Invoice, Payment } from "@lps/shared";
+import { adminDb, adminStorage } from "@/lib/firebase/admin";
+import type { Invoice, Payment, TaxInvoice } from "@lps/shared";
 
 async function getOutstanding(): Promise<number> {
   const snap = await adminDb
@@ -30,22 +30,43 @@ async function getRecentPayments(): Promise<Payment[]> {
   return snap.docs.map((doc) => ({ ...(doc.data() as Omit<Payment, "id">), id: doc.id }));
 }
 
+async function getRecentTaxInvoices(): Promise<(TaxInvoice & { downloadUrl: string | null })[]> {
+  const snap = await adminDb.collection("taxInvoices").orderBy("issuedAt", "desc").limit(10).get();
+  return Promise.all(
+    snap.docs.map(async (doc) => {
+      const invoice = { ...(doc.data() as Omit<TaxInvoice, "id">), id: doc.id };
+      if (!invoice.pdfStoragePath) return { ...invoice, downloadUrl: null };
+      const [downloadUrl] = await adminStorage
+        .bucket()
+        .file(invoice.pdfStoragePath)
+        .getSignedUrl({ action: "read", expires: Date.now() + 15 * 60 * 1000 });
+      return { ...invoice, downloadUrl };
+    })
+  );
+}
+
 function formatInr(amount: number): string {
   return `₹${amount.toLocaleString("en-IN")}`;
 }
 
 export default async function BillingPage() {
-  const [outstanding, collected, invoiceCount, invoices, payments] = await Promise.all([
+  const [outstanding, collected, invoiceCount, invoices, payments, taxInvoices] = await Promise.all([
     getOutstanding(),
     getCollected(),
     getInvoiceCount(),
     getRecentInvoices(),
     getRecentPayments(),
+    getRecentTaxInvoices(),
   ]);
 
   return (
     <div className="flex flex-col gap-8 max-w-2xl">
-      <h1 className="text-2xl">Billing</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl">Billing</h1>
+        <Link href="/admin/billing/new-invoice" className="text-sm text-accent-600">
+          New invoice →
+        </Link>
+      </div>
 
       <div className="flex gap-8">
         <div>
@@ -60,6 +81,33 @@ export default async function BillingPage() {
           <p className="text-3xl">{invoiceCount}</p>
           <p className="text-sm text-ink-500">Invoices issued</p>
         </div>
+      </div>
+
+      <div>
+        <h2 className="text-lg mb-3">Tax invoices</h2>
+        {taxInvoices.length === 0 ? (
+          <p className="text-ink-500 text-sm">No tax invoices yet.</p>
+        ) : (
+          <ul className="flex flex-col divide-y divide-ink-100 border border-ink-100 rounded-md">
+            {taxInvoices.map((invoice) => (
+              <li key={invoice.id} className="px-4 py-3 flex justify-between items-center">
+                <div>
+                  <p>
+                    {invoice.invoiceNumber} — {invoice.billToName}
+                  </p>
+                  <p className="text-sm text-ink-500">
+                    {formatInr(invoice.total)} — Balance due {formatInr(invoice.balanceDue)}
+                  </p>
+                </div>
+                {invoice.downloadUrl && (
+                  <a href={invoice.downloadUrl} className="text-sm text-accent-600">
+                    Download →
+                  </a>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <div>

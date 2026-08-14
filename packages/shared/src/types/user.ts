@@ -28,5 +28,6 @@ export const userSchema = z.object({
   onboarding: onboardingSchema.nullable().default(null),
   createdAt: z.number(),
   updatedAt: z.number(),
+  deletedAt: z.number().nullable().default(null),
 });
 export type User = z.infer<typeof userSchema>;
