@@ -193,3 +193,27 @@ export async function createTaxInvoice(
   revalidatePath("/admin/billing");
   return { status: "success", invoiceNumber };
 }
+
+export type DeleteTaxInvoiceState = { status: "idle" } | { status: "error"; message: string };
+
+export async function deleteTaxInvoice(
+  invoiceId: string,
+  _prevState: DeleteTaxInvoiceState
+): Promise<DeleteTaxInvoiceState> {
+  await requireAdmin();
+
+  const invoiceRef = adminDb.collection("taxInvoices").doc(invoiceId);
+  const snap = await invoiceRef.get();
+  if (!snap.exists) {
+    return { status: "error", message: "Invoice not found." };
+  }
+  const { pdfStoragePath } = snap.data() as TaxInvoice;
+
+  if (pdfStoragePath) {
+    await adminStorage.bucket().file(pdfStoragePath).delete().catch(() => null);
+  }
+  await invoiceRef.delete();
+
+  revalidatePath("/admin/billing");
+  return { status: "idle" };
+}

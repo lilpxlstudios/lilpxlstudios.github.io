@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { adminDb, adminStorage } from "@/lib/firebase/admin";
 import type { Invoice, Payment, TaxInvoice } from "@lps/shared";
+import { DeleteTaxInvoiceButton } from "./DeleteTaxInvoiceButton";
 
 async function getOutstanding(): Promise<number> {
   const snap = await adminDb
@@ -99,11 +100,14 @@ export default async function BillingPage() {
                     {formatInr(invoice.total)} — Balance due {formatInr(invoice.balanceDue)}
                   </p>
                 </div>
-                {invoice.downloadUrl && (
-                  <a href={invoice.downloadUrl} className="text-sm text-accent-600">
-                    Download →
-                  </a>
-                )}
+                <div className="flex items-center gap-4">
+                  {invoice.downloadUrl && (
+                    <a href={invoice.downloadUrl} className="text-sm text-accent-600">
+                      Download →
+                    </a>
+                  )}
+                  <DeleteTaxInvoiceButton invoiceId={invoice.id} />
+                </div>
               </li>
             ))}
           </ul>
