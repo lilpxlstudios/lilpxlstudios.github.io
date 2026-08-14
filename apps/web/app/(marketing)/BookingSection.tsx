@@ -46,6 +46,8 @@ export function BookingSection() {
         shootTypeInterest: shootTypeLabel,
         submittedAt: Date.now(),
         status: "new",
+        notes: null,
+        followUpAt: null,
       };
       await setDoc(ref, inquiry);
       setSent(true);

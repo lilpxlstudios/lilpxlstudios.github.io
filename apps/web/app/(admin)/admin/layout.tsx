@@ -13,8 +13,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             Little Pixel Studios — Admin
           </Link>
           <nav className="flex gap-4 text-sm text-ink-300">
+            <Link href="/admin/crm">CRM</Link>
+            <Link href="/admin/billing">Billing</Link>
             <Link href="/admin/clients">Clients</Link>
-            <Link href="/admin/inquiries">Inquiries</Link>
             <Link href="/admin/subscribers">Subscribers</Link>
           </nav>
         </div>

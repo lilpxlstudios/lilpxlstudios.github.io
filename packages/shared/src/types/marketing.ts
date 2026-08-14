@@ -25,6 +25,9 @@ export const marketingContentSchema = z.object({
 });
 export type MarketingContent = z.infer<typeof marketingContentSchema>;
 
+export const inquiryStatusSchema = z.enum(["new", "contacted", "quoted", "booked", "lost"]);
+export type InquiryStatus = z.infer<typeof inquiryStatusSchema>;
+
 export const inquirySchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -33,6 +36,8 @@ export const inquirySchema = z.object({
   message: z.string(),
   shootTypeInterest: z.string().nullable().default(null),
   submittedAt: z.number(),
-  status: z.enum(["new", "responded", "converted"]),
+  status: inquiryStatusSchema,
+  notes: z.string().nullable().default(null),
+  followUpAt: z.number().nullable().default(null),
 });
 export type Inquiry = z.infer<typeof inquirySchema>;

@@ -2,10 +2,10 @@
 
 import { useActionState } from "react";
 import { updateInquiryStatus, type FormState } from "@/lib/actions/marketing";
-import type { Inquiry } from "@lps/shared";
+import { inquiryStatusSchema, type Inquiry } from "@lps/shared";
 
 const initialState: FormState = { status: "idle" };
-const STATUSES: Inquiry["status"][] = ["new", "responded", "converted"];
+const STATUSES: Inquiry["status"][] = inquiryStatusSchema.options;
 
 export function InquiryStatusForm({ inquiryId, status }: { inquiryId: string; status: Inquiry["status"] }) {
   const boundAction = updateInquiryStatus.bind(null, inquiryId);

@@ -20,6 +20,15 @@ async function getOrdersNeedingAttention(): Promise<Order[]> {
   return snap.docs.map((doc) => doc.data() as Order);
 }
 
+// Extension point for future internal tools: add an entry here and build the
+// route under app/(admin)/admin/<key>/ — no auth/routing wiring needed since
+// AdminLayout already gates everything under /admin.
+const ADMIN_APPS = [
+  { key: "crm", label: "CRM", description: "Leads & inquiries pipeline", href: "/admin/crm" },
+  { key: "billing", label: "Billing", description: "Invoices, payments, revenue", href: "/admin/billing" },
+  { key: "clients", label: "Clients", description: "Client roster & orders", href: "/admin/clients" },
+] as const;
+
 export default async function AdminDashboardPage() {
   const [orders, counts, needsAttention] = await Promise.all([
     getRecentOrders(),
@@ -29,6 +38,19 @@ export default async function AdminDashboardPage() {
 
   return (
     <div className="flex flex-col gap-8">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+        {ADMIN_APPS.map((app) => (
+          <Link
+            key={app.key}
+            href={app.href}
+            className="flex flex-col gap-1 rounded-lg border border-ink-100 px-4 py-4 transition hover:-translate-y-0.5 hover:border-ink-300 hover:shadow-sm"
+          >
+            <span className="font-medium text-ink-900">{app.label}</span>
+            <span className="text-sm text-ink-500">{app.description}</span>
+          </Link>
+        ))}
+      </div>
+
       <div className="flex gap-8">
         <div>
           <p className="text-3xl">{counts.clients}</p>
@@ -39,13 +61,6 @@ export default async function AdminDashboardPage() {
           <p className="text-sm text-ink-500">Orders</p>
         </div>
       </div>
-
-      <Link
-        href="/admin/clients"
-        className="self-start bg-ink-900 text-paper-50 rounded-md px-4 py-2 text-sm"
-      >
-        Manage clients & orders →
-      </Link>
 
       {needsAttention.length > 0 && (
         <div>

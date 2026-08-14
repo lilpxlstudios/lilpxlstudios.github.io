@@ -4,11 +4,9 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/dal";
 import { adminDb } from "@/lib/firebase/admin";
-import type { NewsletterSubscriber } from "@lps/shared";
+import { inquiryStatusSchema, type NewsletterSubscriber } from "@lps/shared";
 
 export type FormState = { status: "idle" } | { status: "error"; message: string };
-
-const inquiryStatusSchema = z.enum(["new", "responded", "converted"]);
 
 export async function updateInquiryStatus(
   inquiryId: string,
@@ -24,6 +22,37 @@ export async function updateInquiryStatus(
 
   await adminDb.collection("inquiries").doc(inquiryId).update({ status: parsed.data });
   revalidatePath("/admin/inquiries");
+  revalidatePath("/admin/crm");
+  return { status: "idle" };
+}
+
+const inquiryNotesSchema = z.object({
+  notes: z.string().trim().max(2000).nullable(),
+  followUpAt: z.number().nullable(),
+});
+
+export async function updateInquiryNotes(
+  inquiryId: string,
+  _prevState: FormState,
+  formData: FormData
+): Promise<FormState> {
+  await requireAdmin();
+
+  const rawNotes = formData.get("notes");
+  const rawFollowUpDate = formData.get("followUpAt");
+  const parsed = inquiryNotesSchema.safeParse({
+    notes: typeof rawNotes === "string" && rawNotes.trim() !== "" ? rawNotes : null,
+    followUpAt:
+      typeof rawFollowUpDate === "string" && rawFollowUpDate !== ""
+        ? new Date(rawFollowUpDate).getTime()
+        : null,
+  });
+  if (!parsed.success) {
+    return { status: "error", message: "Invalid notes or follow-up date." };
+  }
+
+  await adminDb.collection("inquiries").doc(inquiryId).update(parsed.data);
+  revalidatePath("/admin/crm");
   return { status: "idle" };
 }
 

@@ -32,6 +32,8 @@ export function ContactForm() {
         shootTypeInterest: shootTypeInterest || null,
         submittedAt: Date.now(),
         status: "new",
+        notes: null,
+        followUpAt: null,
       };
       await setDoc(ref, inquiry);
       setSent(true);
