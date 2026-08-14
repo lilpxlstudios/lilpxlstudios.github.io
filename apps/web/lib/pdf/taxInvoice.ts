@@ -20,17 +20,20 @@ const PAGE_LEFT = 50;
 const PAGE_RIGHT = 545;
 
 // Column widths for the item table, summing to PAGE_RIGHT - PAGE_LEFT (495pt).
+// cgstPct/sgstPct are wide enough to hold their header label on one line at
+// font size 8 — narrower and pdfkit wraps "CGST %" onto two lines, crowding
+// into the neighboring column.
 const COLS = {
   index: 20,
-  description: 125,
+  description: 118,
   hsnSac: 50,
-  qty: 30,
-  rate: 55,
-  cgstPct: 25,
-  cgstAmt: 45,
-  sgstPct: 25,
-  sgstAmt: 45,
-  amount: 75,
+  qty: 28,
+  rate: 52,
+  cgstPct: 32,
+  cgstAmt: 43,
+  sgstPct: 32,
+  sgstAmt: 43,
+  amount: 77,
 };
 
 export function renderTaxInvoicePdf(params: {
@@ -102,9 +105,9 @@ export function renderTaxInvoicePdf(params: {
     headerCell("HSN/SAC", COLS.hsnSac, "center");
     headerCell("Qty", COLS.qty, "center");
     headerCell("Rate", COLS.rate, "right");
-    headerCell("CGST %", COLS.cgstPct, "center");
+    headerCell("CGST%", COLS.cgstPct, "center");
     headerCell("CGST Amt", COLS.cgstAmt, "right");
-    headerCell("SGST %", COLS.sgstPct, "center");
+    headerCell("SGST%", COLS.sgstPct, "center");
     headerCell("SGST Amt", COLS.sgstAmt, "right");
     headerCell("Amount", COLS.amount, "right");
     doc.y = y + 14;
