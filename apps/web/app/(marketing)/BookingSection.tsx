@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { doc, setDoc, collection } from "firebase/firestore";
-import { clientDb } from "@/lib/firebase/client";
-import { PACKAGE_OPTIONS, type Inquiry } from "@lps/shared";
+import { track } from "@vercel/analytics";
+import { PACKAGE_OPTIONS } from "@lps/shared";
+import { submitInquiry } from "@/lib/inquiries";
 import { studioContact } from "./siteConfig";
 import { Reveal } from "./Reveal";
 
@@ -27,7 +27,6 @@ export function BookingSection() {
     setPending(true);
 
     try {
-      const ref = doc(collection(clientDb, "inquiries"));
       const shootTypeLabel = PACKAGE_OPTIONS.find((s) => s.value === shootType)?.label ?? null;
       const message = [
         date ? `Approximate session date / due date: ${date}` : null,
@@ -36,20 +35,14 @@ export function BookingSection() {
         .filter(Boolean)
         .join("\n\n");
 
-      // Field set must exactly match firestore.rules' `hasOnly([...])` allowlist
-      // for public creates — no `id` field (the doc ID carries that).
-      const inquiry: Omit<Inquiry, "id"> = {
+      await submitInquiry({
         name,
         email,
         phone: phone || null,
         message: message || "(no additional notes)",
         shootTypeInterest: shootTypeLabel,
-        submittedAt: Date.now(),
-        status: "new",
-        notes: null,
-        followUpAt: null,
-      };
-      await setDoc(ref, inquiry);
+      });
+      track("Booking CTA Clicked", { channel: "form" });
       setSent(true);
     } catch {
       setError("Something went wrong. Please try again.");
@@ -87,7 +80,11 @@ export function BookingSection() {
               <span className="text-accent-600">☎</span>
               <div>
                 <div className="text-xs text-ink-500">Phone & WhatsApp</div>
-                <a href={studioContact.phoneHref} className="text-ink-900">
+                <a
+                  href={studioContact.phoneHref}
+                  onClick={() => track("Booking CTA Clicked", { channel: "phone" })}
+                  className="text-ink-900"
+                >
                   {studioContact.phoneDisplay}
                 </a>
               </div>
@@ -103,7 +100,13 @@ export function BookingSection() {
               <span className="text-accent-600">📷</span>
               <div>
                 <div className="text-xs text-ink-500">Instagram</div>
-                <a href={studioContact.instagramUrl} target="_blank" rel="noopener" className="text-ink-900">
+                <a
+                  href={studioContact.instagramUrl}
+                  target="_blank"
+                  rel="noopener"
+                  onClick={() => track("Booking CTA Clicked", { channel: "instagram" })}
+                  className="text-ink-900"
+                >
                   {studioContact.instagramHandle}
                 </a>
               </div>

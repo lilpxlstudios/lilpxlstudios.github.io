@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withBotId } from "botid/next/config";
 
 const nextConfig: NextConfig = {
   // pdfkit must stay external (not bundled/inlined) — it reads its standard-font
@@ -11,4 +12,5 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["sharp", "pdfkit"],
 };
 
-export default nextConfig;
+// withBotId adds the proxy rewrites BotID needs to verify /api/inquiries.
+export default withBotId(nextConfig);

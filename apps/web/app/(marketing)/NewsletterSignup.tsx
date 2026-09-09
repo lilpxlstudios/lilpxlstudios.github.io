@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { doc, setDoc, collection } from "firebase/firestore";
+import { track } from "@vercel/analytics";
 import { clientDb } from "@/lib/firebase/client";
 import type { NewsletterSubscriber } from "@lps/shared";
 
@@ -31,6 +32,7 @@ export function NewsletterSignup() {
         unsubscribedAt: null,
       };
       await setDoc(ref, subscriber);
+      track("Newsletter Signup");
       setDone(true);
     } catch {
       setError("Something went wrong. Please try again.");

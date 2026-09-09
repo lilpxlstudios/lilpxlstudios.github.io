@@ -1,12 +1,16 @@
 import { onDocumentCreated, onDocumentUpdated } from "firebase-functions/v2/firestore";
 import { logger } from "firebase-functions/v2";
 import "./admin";
-import { sendEmail, getAdminEmails, resendApiKey } from "./email";
+import { sendEmail, getAdminEmails, escapeHtml, resendApiKey } from "./email";
 import type { Inquiry, NewsletterSubscriber, Order } from "@lps/shared";
 
 // Not deployed to a real domain yet (M7) — point this at littlepixelstudios.com
 // once the site is live.
 const SITE_URL = process.env.SITE_URL ?? "http://localhost:3000";
+
+// Kept in sync manually with apps/web/app/(marketing)/siteConfig.ts's
+// studioContact.phoneDisplay — functions/ doesn't share app code with apps/web.
+const STUDIO_PHONE_DISPLAY = "+91 97911 43983";
 
 export const onInquiryCreated = onDocumentCreated(
   { document: "inquiries/{inquiryId}", secrets: [resendApiKey] },
@@ -14,21 +18,31 @@ export const onInquiryCreated = onDocumentCreated(
     const inquiry = event.data?.data() as Inquiry | undefined;
     if (!inquiry) return;
 
+    const name = escapeHtml(inquiry.name);
+    const email = escapeHtml(inquiry.email);
+    const phone = inquiry.phone ? escapeHtml(inquiry.phone) : null;
+    const shootTypeInterest = inquiry.shootTypeInterest ? escapeHtml(inquiry.shootTypeInterest) : null;
+    const message = escapeHtml(inquiry.message);
+
     const adminEmails = await getAdminEmails();
     if (adminEmails.length === 0) {
       logger.warn("onInquiryCreated: no admin users to notify");
-      return;
     }
 
-    await Promise.all(
-      adminEmails.map((to) =>
+    await Promise.all([
+      ...adminEmails.map((to) =>
         sendEmail({
           to,
-          subject: `New inquiry from ${inquiry.name}`,
-          html: `<p><strong>${inquiry.name}</strong> (${inquiry.email}${inquiry.phone ? `, ${inquiry.phone}` : ""}) submitted a new inquiry${inquiry.shootTypeInterest ? ` about ${inquiry.shootTypeInterest}` : ""}:</p><p>${inquiry.message}</p>`,
+          subject: `New inquiry from ${name}`,
+          html: `<p><strong>${name}</strong> (${email}${phone ? `, ${phone}` : ""}) submitted a new inquiry${shootTypeInterest ? ` about ${shootTypeInterest}` : ""}:</p><p>${message}</p>`,
         })
-      )
-    );
+      ),
+      sendEmail({
+        to: inquiry.email,
+        subject: "We received your inquiry — Little Pixel Studios",
+        html: `<p>Hi ${name},</p><p>Thanks for reaching out to Little Pixel Studios${shootTypeInterest ? ` about ${shootTypeInterest}` : ""}. We've received your message and will get back to you within 24 hours.</p><p>In the meantime, feel free to reach us directly on WhatsApp at ${STUDIO_PHONE_DISPLAY}.</p>`,
+      }),
+    ]);
   }
 );
 

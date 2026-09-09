@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { track } from "@vercel/analytics";
 import { whatsappLink } from "./siteConfig";
 import { Reveal } from "./Reveal";
 
@@ -79,6 +80,7 @@ export function PricingCalculator() {
   function selectPackage(key: PackageKey) {
     setPackageKey(key);
     setAddons({});
+    track("Pricing Package Selected", { package: key });
   }
 
   function toggleAddon(key: string) {
@@ -230,6 +232,7 @@ I would like to discuss slots availability!`
               href={whatsappHref}
               target="_blank"
               rel="noopener"
+              onClick={() => track("Pricing WhatsApp CTA Clicked", { package: packageKey })}
               className="rounded-md bg-accent-500 px-4 py-3.5 text-center text-sm font-medium text-ink-950 shadow-sm transition hover:-translate-y-0.5 hover:bg-accent-400 hover:shadow-md"
             >
               {selected.kind === "custom" ? "Enquire About This Package" : "Book This Custom Package"}

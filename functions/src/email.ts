@@ -19,6 +19,19 @@ export type SendEmailParams = {
   html: string;
 };
 
+// Escape user-supplied text before interpolating it into an email's HTML body —
+// callers here send transactional email to attacker-controllable inquiry/subscriber
+// addresses, so unescaped input would let a form submission inject arbitrary markup
+// into mail sent "from" the studio.
+export function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 export async function sendEmail(params: SendEmailParams): Promise<void> {
   const resend = new Resend(resendApiKey.value());
   const { error } = await resend.emails.send({ from: FROM_EMAIL, ...params });

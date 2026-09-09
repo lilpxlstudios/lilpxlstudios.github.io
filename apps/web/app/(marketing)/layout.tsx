@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { NewsletterSignup } from "./NewsletterSignup";
 import { MarketingHeader } from "./MarketingHeader";
+import { StructuredData } from "./StructuredData";
 import { studioContact } from "./siteConfig";
 
 export default function MarketingLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
+      <StructuredData />
       <MarketingHeader />
       <main className="flex-1">{children}</main>
       <footer className="relative bg-ink-900 text-paper-100">

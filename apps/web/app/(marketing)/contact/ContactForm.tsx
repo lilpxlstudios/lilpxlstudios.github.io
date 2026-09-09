@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { doc, setDoc, collection } from "firebase/firestore";
-import { clientDb } from "@/lib/firebase/client";
-import type { Inquiry } from "@lps/shared";
+import { track } from "@vercel/analytics";
+import { submitInquiry } from "@/lib/inquiries";
 
 export function ContactForm() {
   const [name, setName] = useState("");
@@ -21,21 +20,14 @@ export function ContactForm() {
     setPending(true);
 
     try {
-      const ref = doc(collection(clientDb, "inquiries"));
-      // Field set must exactly match firestore.rules' `hasOnly([...])` allowlist
-      // for public creates — no `id` field (the doc ID carries that).
-      const inquiry: Omit<Inquiry, "id"> = {
+      await submitInquiry({
         name,
         email,
         phone: phone || null,
         message,
         shootTypeInterest: shootTypeInterest || null,
-        submittedAt: Date.now(),
-        status: "new",
-        notes: null,
-        followUpAt: null,
-      };
-      await setDoc(ref, inquiry);
+      });
+      track("Contact Form Submitted", { shootTypeInterest: shootTypeInterest || "none" });
       setSent(true);
     } catch {
       setError("Something went wrong. Please try again.");
